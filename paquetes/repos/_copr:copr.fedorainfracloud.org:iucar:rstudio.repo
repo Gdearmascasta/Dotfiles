@@ -1,0 +1,10 @@
+[copr:copr.fedorainfracloud.org:iucar:rstudio]
+name=Copr repo for rstudio owned by iucar
+baseurl=https://download.copr.fedorainfracloud.org/results/iucar/rstudio/fedora-$releasever-$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://download.copr.fedorainfracloud.org/results/iucar/rstudio/pubkey.gpg
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1

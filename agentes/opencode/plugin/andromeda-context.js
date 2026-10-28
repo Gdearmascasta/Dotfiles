@@ -1,0 +1,70 @@
+// Puerto opencode de tools/hooks/andromeda-context.js (misma lógica de búsqueda de nota;
+// ver ese archivo para el detalle línea a línea). Formato opencode 2.x: usa
+// session.hook("context") en vez de SessionStart (ver handoff-reminder.js: el system prompt
+// se reconstruye en cada llamada, así que la nota se calcula una vez por sesión y se
+// reinyecta siempre) y el directorio de la sesión en vez de `cwd` por stdin.
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+
+const VAULT = process.env.ANDROMEDA_VAULT || path.join(os.homedir(), "ANDROMEDA", "01-Proyectos");
+const MAX_CHARS = 2500; // tope duro: el contexto inyectado debe ser barato
+
+const norm = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normPath = (s) => path.resolve(s).replace(/[\\/]+$/, '').toLowerCase();
+
+const buildNote = (directory) => {
+  if (!fs.existsSync(VAULT)) return null;
+  if (normPath(directory).startsWith(normPath(path.dirname(VAULT)))) return null;
+
+  const notes = fs
+    .readdirSync(VAULT)
+    .filter((f) => f.endsWith(".md"))
+    .map((f) => {
+      const full = path.join(VAULT, f);
+      const text = fs.readFileSync(full, "utf8");
+      const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      const ruta = fm && fm[1].match(/^ruta:\s*"?(.+?)"?\s*$/m);
+      return { file: full, name: f.slice(0, -3), text, ruta: ruta ? normPath(ruta[1]) : null };
+    });
+
+  // Candidatos: el directorio del proyecto y hasta 2 padres (proyectos en subcarpetas)
+  const candidates = [directory];
+  for (let p = directory, i = 0; i < 2; i++) {
+    const parent = path.dirname(p);
+    if (parent === p) break;
+    candidates.push(parent);
+    p = parent;
+  }
+
+  let hit = null;
+  for (const c of candidates) {
+    hit =
+      notes.find((n) => n.ruta === normPath(c)) ||
+      notes.find((n) => norm(n.name) === norm(path.basename(c)));
+    if (hit) break;
+  }
+  if (!hit) return null;
+
+  let body = hit.text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "").trim();
+  if (body.length > MAX_CHARS) body = body.slice(0, MAX_CHARS) + "\n[... nota truncada]";
+  const mtime = fs.statSync(hit.file).mtime.toISOString().slice(0, 10);
+  return (
+    `[plugin NEPTUNO·ANDROMEDA] Nota de contexto del proyecto (bóveda ANDROMEDA, "${hit.name}", actualizada ${mtime}) — úsala como mapa inicial y no re-derives lo que ya dice; si hay HANDOFF.md, ese manda sobre esta nota:\n\n${body}`
+  );
+};
+
+export default {
+  id: "neptuno-andromeda-context",
+  setup: async (ctx) => {
+    const cache = new Map();
+    await ctx.session.hook("context", async (input) => {
+      if (!cache.has(input.sessionID)) {
+        const session = await ctx.session.get({ sessionID: input.sessionID });
+        cache.set(input.sessionID, buildNote(session?.location?.directory || process.cwd()));
+      }
+      const text = cache.get(input.sessionID);
+      if (text) input.system.push({ type: "text", text });
+    });
+  },
+};

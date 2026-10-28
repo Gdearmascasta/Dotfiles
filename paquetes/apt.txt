@@ -1,0 +1,69 @@
+# Paquetes para Ubuntu/Debian. install.sh omite los que no existen en la versión instalada.
+# Base del instalador
+git
+stow
+rsync
+curl
+wget
+unzip
+zip
+xz-utils
+p7zip-full
+python3
+fontconfig
+dconf-cli
+flatpak
+# GNOME
+gnome-shell-extensions
+gnome-shell-extension-manager
+gnome-tweaks
+nautilus
+ptyxis
+nwg-look
+# Terminal
+kitty
+bash-completion
+bat
+btop
+cava
+fastfetch
+fzf
+lsd
+eza
+multitail
+neovim
+tree
+trash-cli
+zoxide
+yazi
+lazygit
+# Multimedia
+ffmpeg
+mpv
+obs-studio
+pavucontrol
+kdenlive
+kdeconnect
+rhythmbox
+# Utilidades
+bleachbit
+baobab
+inxi
+nmap
+whois
+speedtest-cli
+# Fuentes
+fonts-jetbrains-mono
+fonts-firacode
+fonts-font-awesome
+# Desarrollo
+build-essential
+cmake
+meson
+ninja-build
+nodejs
+npm
+podman
+podman-compose
+r-base
+postgresql

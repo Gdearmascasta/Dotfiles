@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "plugins": {
+    "engram@engram": [
+      {
+        "scope": "user",
+        "installPath": "/home/gcasta/.claude/plugins/cache/engram/engram/0.1.13",
+        "version": "0.1.13",
+        "installedAt": "2026-10-20T01:50:40.412Z",
+        "lastUpdated": "2026-10-20T01:50:40.412Z",
+        "gitCommitSha": "1e280f87b8842ee132869b30a3a4bdf29424f8ad"
+      }
+    ]
+  }
+}

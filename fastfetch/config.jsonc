@@ -1,0 +1,273 @@
+{
+
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+
+
+
+    "logo": {
+
+        "padding": {
+
+            "top": 1
+
+        }
+
+    },
+
+
+
+    "display": {
+
+        "separator": " 󰑃  "
+
+    },
+
+
+
+    "modules": [
+
+        "break",
+
+
+
+        {
+
+            "type": "os",
+
+            "key": " DISTRO",
+
+            "keyColor": "#A1A1AA"
+
+        },
+
+        {
+
+            "type": "kernel",
+
+            "key": "│ ├",
+
+            "keyColor": "#A1A1AA"
+
+        },
+
+        {
+
+            "type": "packages",
+
+            "key": "│ ├󰏖",
+
+            "keyColor": "#A1A1AA"
+
+        },
+
+        {
+
+            "type": "shell",
+
+            "key": "│ └",
+
+            "keyColor": "#A1A1AA"
+
+        },
+
+
+
+        {
+
+            "type": "wm",
+
+            "key": " DE/WM",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+        {
+
+            "type": "wmtheme",
+
+            "key": "│ ├󰉼",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+        {
+
+            "type": "icons",
+
+            "key": "│ ├󰀻",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+        {
+
+            "type": "cursor",
+
+            "key": "│ ├",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+        {
+
+            "type": "terminalfont",
+
+            "key": "│ ├",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+        {
+
+            "type": "terminal",
+
+            "key": "│ └",
+
+            "keyColor": "#D1D5DB"
+
+        },
+
+
+
+        {
+
+            "type": "host",
+
+            "key": "󰌢 SYSTEM",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "cpu",
+
+            "key": "│ ├󰻠",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "gpu",
+
+            "key": "│ ├󰻑",
+
+            "format": "{2}",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "display",
+
+            "key": "│ ├󰍹",
+
+            "keyColor": "#3B82F6",
+
+            "compactType": "original-with-refresh-rate"
+
+        },
+
+        {
+
+            "type": "memory",
+
+            "key": "│ ├󰾆",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "swap",
+
+            "key": "│ ├󰓡",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "uptime",
+
+            "key": "│ ├󰅐",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+        {
+
+            "type": "display",
+
+            "key": "│ └󰍹",
+
+            "keyColor": "#3B82F6"
+
+        },
+
+
+
+        {
+
+            "type": "sound",
+
+            "key": " AUDIO",
+
+            "format": "{2}",
+
+            "keyColor": "#2563EB"
+
+        },
+
+        {
+
+            "type": "player",
+
+            "key": "│ ├󰥠",
+
+            "keyColor": "#2563EB"
+
+        },
+
+        {
+
+            "type": "media",
+
+            "key": "│ └󰝚",
+
+            "keyColor": "#2563EB"
+
+        },
+
+
+
+        {
+
+            "type": "custom",
+
+            "format": "\u001b[90m  \u001b[37m  \u001b[94m  \u001b[34m"
+
+        },
+
+
+
+        "break"
+
+    ]
+
+} 
+
+

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Segunda barrera del filtro privado: no deja hacer commit si el filtro no está activo
+# o si lo que va a entrar aún lleva datos personales. Lo activa configurar_filtro (lib.sh).
+set -euo pipefail
+if [[ -z $(git config --get filter.privado.clean) ]]; then
+	echo "pre-commit: el filtro privado no está activo; ejecuta ./backup.sh o ./install.sh --solo-enlaces" >&2
+	exit 1
+fi
+if git grep --cached -nIE '"recent": \[[^]]|"search_history": \[[^]]|"RestoreToken"|^playback-history=' -- \
+	'*/ui.json' spotifast/settings.json 'obs-studio/basic/scenes/*.json' 'escritorio/dconf/*.ini' >&2; then
+	echo "pre-commit: lo anterior son datos personales que no deberían entrar; revisa filtros/privado.py" >&2
+	exit 1
+fi

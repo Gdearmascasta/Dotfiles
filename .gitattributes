@@ -1,0 +1,5 @@
+# Se limpian al hacer commit con filtros/privado.py (ver configurar_filtro en lib.sh).
+*/ui.json                    filter=privado
+spotifast/settings.json      filter=privado
+obs-studio/basic/scenes/*.json filter=privado
+escritorio/dconf/*.ini       filter=privado

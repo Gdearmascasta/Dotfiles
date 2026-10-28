@@ -1,0 +1,276 @@
+# Pixel Agents — la interfaz visual del hivemind
+
+[Pixel Agents](https://github.com/pixel-agents-hq/pixel-agents) (MIT) convierte cada agente de
+Claude Code en un personaje pixel-art dentro de una oficina: caminan a su mesa, teclean cuando
+editan archivos, leen cuando buscan, y levantan un bocadillo cuando están **bloqueados esperándote**.
+
+Para NEPTUNO su valor no es decorativo: cuando repartes trabajo entre subagentes y la flota externa,
+el cuello de botella deja de ser el trabajo y pasa a ser **saber quién está parado**. Eso es
+exactamente lo que esta interfaz muestra de un vistazo.
+
+## Arrancar
+
+Servidor local, desde la carpeta cuyas sesiones quieras ver:
+
+```bash
+node tools/pixel-bridge.js preparar   # una vez: enciende "Watch All Sessions" (ver abajo)
+pixel-agents --port 3100              # instalado global con: npm install --global pixel-agents
+```
+
+Así arrancado **no sobrevive a que cierres la sesión**. Para que esté siempre levantado, como
+servicio de usuario de systemd:
+
+```bash
+bash tools/pixel-service.sh instalar 3100     # deja el servicio activo, con arranque en el boot
+node tools/pixel-bridge.js url                # la URL de ahora (el token rota; ver abajo)
+```
+
+Luego se maneja con `systemctl --user {status,restart,stop} pixel-agents`, y se quita con
+`bash tools/pixel-service.sh desinstalar`. El instalador hace tres cosas que no son opcionales:
+mete `preparar` como `ExecStartPre` (para que un rearranque automático no se salte el ajuste),
+pone `Restart=always`, y activa `loginctl enable-linger` — sin *linger* el gestor de usuario muere
+al cerrar la última sesión y se lleva el servicio por delante.
+
+**El token rota en cada arranque y no se puede fijar**: `pixel-agents` solo acepta `--port` y
+`--host`, y su bundle no lee ninguna variable de entorno de token (solo `PIXEL_AGENTS_DEBUG` y
+`PIXEL_AGENTS_DEBUG_LOG`). Así que después de cada reinicio del servicio la URL cambia y hay que
+releerla con `node tools/pixel-bridge.js url`. No marques la URL como favorito: marca el comando.
+
+`preparar` es obligatorio la primera vez y hay que hacerlo **antes** de arrancar el servidor: el
+ajuste se lee al arrancar. Sin él la flota externa no aparece nunca, por la razón que explica la
+sección del puente. Es idempotente y es el mismo interruptor que `Settings → Watch All Sessions`.
+
+Imprime una URL con `?token=`. **Trata esa URL como un secreto**: el token es una capacidad al
+portador, no una prueba de estar en local — quien lo tenga puede aprobar la instalación del hook
+desde cualquier sitio que alcance el servidor. Sin token se puede mirar la oficina, pero no tocar
+los hooks. Por defecto escucha en `127.0.0.1`; `--host 0.0.0.0` lo expone a la red local.
+
+También existe como extensión de VS Code, y las dos pueden convivir: cada servidor se registra en
+`~/.pixel-agents/servers/` y el hook manda los eventos a todos los registros activos.
+
+## Como aplicación, no como pestaña
+
+```bash
+bash tools/pixel-app.sh instalar-lanzador   # una vez: entrada en el menú, con icono
+bash tools/pixel-app.sh abrir               # ventana propia, sin barra de URL ni pestañas
+```
+
+`abrir` lanza Chrome en modo `--app`, levanta el servicio si estuviera parado y **resuelve el
+token en cada lanzamiento**: es la forma de no volver a toparse con la URL caducada, porque un
+acceso directo con el token escrito dentro se rompe en el siguiente reinicio del servidor.
+
+**No es una PWA**, y conviene no llamarlo así: el paquete no sirve `manifest.webmanifest` ni
+service worker —su `index.html` solo trae el `<link rel="icon">` y la hoja de estilos—, así que
+Chrome no ofrece *Instalar*. Para una PWA de verdad habría que inyectar manifest e iconos en ese
+HTML, y eso significa o parchear `node_modules` (se pierde en cada `npm update -g`) o levantar un
+proxy propio que reescriba el HTML y haga de puente del WebSocket. El resultado en pantalla es el
+mismo; lo que cambia es la deuda de mantenimiento.
+
+Firefox no sirve: no tiene modo `--app`. El script busca Chrome, Chromium, Brave o Edge.
+
+## La trampa que había que resolver antes de instalarlo
+
+Pixel Agents funciona por **hooks**: copia su script a `~/.claude/pixel-agents-hook.js` y se engancha
+a nueve eventos (`SessionStart`, `SessionEnd`, `Stop`, `PermissionRequest`, `Notification`,
+`PreToolUse`, `PostToolUse`, `SubagentStop`, `UserPromptSubmit`) escribiendo en la clave `hooks` del
+`~/.claude/settings.json`.
+
+Y ahí chocaba de frente con NEPTUNO: **`tools/sync-global.js` reemplazaba esa clave entera** en cada
+ejecución. El primer `node tools/sync-global.js` después de instalar la interfaz habría borrado sus
+nueve hooks — en silencio, sin error, y con la oficina quedándose vacía sin explicación.
+
+Arreglado de raíz, y para cualquier tercero, no solo para este: `sync-global.js` **fusiona** en vez de
+reemplazar. Reescribe los hooks que gestiona NEPTUNO (los que apuntan a su carpeta de hooks, y los
+antiguos `graphify hook-guard`, que así se retiran) y **conserva intacto todo lo demás**. Verificado simulando los nueve hooks de
+pixel-agents y ejecutando el resync: sobreviven 9/9, los 5 de NEPTUNO siguen ahí, y una segunda
+pasada no duplica nada.
+
+Si algún día un hook ajeno desaparece tras un resync, el sospechoso es esa función `esDeNeptuno`:
+está clasificando como propio algo que no lo es.
+
+## Qué se ve
+
+| | En la oficina |
+|---|---|
+| Sesiones de Claude Code | sí — una por terminal, cada una su personaje |
+| Subagentes de NEPTUNO (`scout`, `critic`, `delegate`…) | sí — como personajes efímeros aparte |
+| Teammates persistentes | sí, con su rol y su ciclo de vida |
+| **La flota externa** (`opencode`, `agy`, `devin`) | **sí, vía `tools/pixel-bridge.js`** |
+
+## El puente: cómo se ve la flota sin forkear nada
+
+Pixel Agents solo implementa un proveedor, Claude Code, así que un `hivemind.js run` no aparecería
+nunca. La salida obvia era forkear un proyecto de 9.000 estrellas y mantener el fork. No hizo falta.
+
+Su hook no hace nada mágico: descubre los servidores vivos en `~/.pixel-agents/servers/` y les hace
+POST del payload de hook **tal cual**.
+
+```
+POST http://127.0.0.1:<puerto>/api/hooks/claude
+Authorization: Bearer <token del registro>
+body: el evento de hook de Claude Code, verbatim
+```
+
+Así que `tools/pixel-bridge.js` emite esos mismos eventos por cada agente externo, con su propio
+`session_id` — y por tanto su propio personaje. El servidor no distingue quién los originó, ni
+necesita distinguirlo. Cero cambios en pixel-agents, cero fork que mantener.
+
+El mapeo sale de leer `normalizeHookEvent` en su bundle, que exige `hook_event_name` y `session_id`
+como cadenas y de ahí ramifica:
+
+| Evento emitido | Cuándo | Qué se ve |
+|---|---|---|
+| `SessionStart` (`cwd`, `source`) | al despachar | **nada todavía**: deja la sesión *pendiente* |
+| `PreToolUse` (`tool_name`, `tool_input`) | acto seguido | **confirma la pendiente y aparece** el personaje, tecleando |
+| `PostToolUse` + `PreToolUse` | cada 3 s mientras dura | sigue tecleando, con los segundos transcurridos |
+| `PostToolUse` | al terminar | acaba la herramienta |
+| `Stop` | si salió `ok` | fin de turno, se queda tranquilo |
+| `Notification` (`idle_prompt`) | si salió mal | **bocadillo: te está reclamando** |
+| `SessionEnd` (`reason`) | **nunca al terminar** — solo `retirar` | se marcha de la oficina |
+
+La fila del bocadillo es el punto: un despacho que falló por permisos, timeout o error **levanta la
+mano en la oficina** en vez de irse callado. Es exactamente cuando quieres mirar la pantalla.
+
+### Por qué al acabar se quedan ociosos y no desaparecen
+
+`SessionEnd` no se manda al terminar un encargo, a propósito. En el servidor, `onSessionEnd` hace
+`removeAgent` para todo agente externo: el personaje desaparece de la oficina en el mismo instante en
+que acaba el despacho, que es justo cuando quieres ver el resultado. Sin ese evento el agente se
+queda en su escritorio y a los 5 s pasa a *esperando* — ocioso, visible, listo para el siguiente.
+
+Para que además reutilicen escritorio en vez de acumular uno muerto por cada `run`, el `session_id`
+es **estable por agente** (`neptuno-opencode`, no `neptuno-opencode-<marca de tiempo>`). El precio:
+dos despachos simultáneos al mismo agente comparten personaje y el texto se alterna. En este flujo
+no pasa, porque quien despacha usa `spawnSync` y bloquea.
+
+```bash
+node tools/pixel-bridge.js poblar             # sienta a los tres, ociosos, sin esperar un encargo
+node tools/pixel-bridge.js retirar [agente…]  # los echa de verdad (sin args, a los tres)
+```
+
+`poblar` va como `ExecStartPost` del servicio, porque los agentes externos **no se restauran** al
+arrancar: `restoreExternalAgents` exige que exista su `jsonlFile`, y el de la flota es la cadena
+vacía. Sin eso la oficina sale vacía después de cada reinicio.
+
+**Cuidado con apagar los hooks en los ajustes de la oficina.** Hay un barredor que cada 30 s borra
+todo agente externo cuyo `jsonlFile` no se pueda `statSync` — el nuestro es `""`, así que lanza y
+entrarían todos en la lista. Lo que lo salva es que ese barredor sale antes si los hooks están
+activos, que es como viene de fábrica. Comprobado dejándolos ociosos 80 s (dos barridos) sin una
+sola línea `removing stale external agent`. Con los hooks apagados, la flota se borraría sola cada
+medio minuto.
+
+Funciona en los dos transportes: `hivemind.js run` y `hivemind.js session`. `doctor` dice si hay
+servidor escuchando.
+
+### Las tres condiciones que no son obvias
+
+Nada de esto sale del README de pixel-agents; sale de leer su bundle y de comprobarlo contra el
+servidor de verdad. Las tres se descubrieron fallando.
+
+**1. `SessionStart` no crea a nadie.** Solo guarda la sesión como *pendiente*. Es el evento
+siguiente el que llama a `confirmPending` y crea el personaje. Un puente que emitiera únicamente
+`SessionStart` recibiría `200 ok` y no vería aparecer a nadie.
+
+**2. Sin "Watch All Sessions" la sesión pendiente se descarta.** Al confirmar, el servidor adopta la
+sesión solo si `isTrackedProject(dir)` — es decir, si ya existe un personaje con ese mismo
+`projectDir` — **o** si el ajuste está encendido. Un agente de la flota arranca en frío y nunca
+cumple lo primero, así que sin el interruptor el servidor registra
+`external session ... not adopted (project untracked, Watch All Sessions off)` y devuelve `200`
+igualmente. Ese `200` es lo que hace que el fallo parezca un éxito. De ahí `preparar`.
+
+**3. Sin `transcript_path` es mejor, no peor.** Si el evento no trae transcript, el servidor toma la
+rama *hooks-only*: crea un agente externo a partir del `cwd` a secas, sin tocar el disco ni esperar
+un JSONL que la flota no tiene. Por eso el puente **no** manda `transcript_path`, y por eso no hace
+falta inventar transcripts falsos en `~/.claude/projects/`.
+
+### El nombre y el latido
+
+La oficina rotula al personaje con `basename(cwd)`. Si los tres agentes reportaran el directorio real
+del repo, los tres saldrían llamándose `NEPTUNO`; por eso cada uno reporta un escritorio propio bajo
+`.hivemind/oficina/<agente>` y sale como `opencode`, `antigravity` o `devin`. Es una etiqueta: en la
+rama *hooks-only* ese `projectDir` no se lee del disco.
+
+El servidor marca al personaje como *esperando* tras **5 segundos** sin eventos. Un encargo a la
+flota dura minutos sin producir ni un hook, así que sin más el agente saldría ocioso justo mientras
+trabaja. El puente lanza un **latido** en un proceso aparte (`pixel-bridge.js latido`, `detached`)
+que cada 3 s cierra la herramienta anterior y abre otra con los segundos transcurridos. Va en otro
+proceso por la misma razón de siempre: el despacho bloquea el bucle de eventos. El hijo se apaga solo
+si el padre muere de golpe, así que un `SIGKILL` del tope duro no deja personajes fantasma.
+
+### Cómo se comprueba que funciona
+
+No sirve un doble de pruebas escrito por uno mismo: acepta cualquier cosa y solo demuestra que el
+puente cumple el contrato HTTP, no que aparezca nadie. Hay que leer el estado real del servidor por
+WebSocket, que es lo mismo que ve el navegador:
+
+```
+ws://127.0.0.1:<puerto>/ws?token=<token del registro>
+{"type":"webviewReady"}   ->   existingAgents / agentCreated / agentStatus / agentToolStart
+```
+
+`agentCreated` con `isExternal` y `folderName`, y `agentStatus` en `active`, son la evidencia. El
+log del servidor lo dice también en claro: `Hook: Agent N - detected hooks-only external session`.
+
+### La trampa que costó encontrar
+
+La primera versión emitía por HTTP asíncrono desde `hivemind.js` y entregaba **cero eventos** con un
+servidor vivo escuchando. Causa: `spawnSync` **bloquea el bucle de eventos de Node**, así que el POST
+lanzado antes del despacho no llega a ejecutarse nunca, y el `process.exit()` del final lo mata antes
+de salir. Por eso el puente se invoca como **proceso hijo síncrono** (`inicio` / `fin`, una fase por
+invocación) en vez de como una promesa suelta. Si alguna vez añades emisiones nuevas, ten esto
+presente: cualquier `await` alrededor de un `spawnSync` es una promesa que no se va a cumplir.
+
+Y una regla dura: **esto es decoración**. Si no hay servidor, si el POST falla o si el registro está
+corrupto, el puente se calla y devuelve. Se salta incluso el spawn cuando no hay ningún servidor
+vivo, para no pagar un proceso por nada. Un fallo de la interfaz nunca puede tumbar un despacho.
+
+## Notas de operación
+
+- **Modo heurístico**: si los hooks no están disponibles, infiere el estado leyendo los transcripts
+  JSONL de `~/.claude/projects/`. Funciona, pero con menos detalle y más retraso.
+- **Watch All Sessions**: además de ser obligatorio para la flota, hace que la oficina adopte
+  sesiones de Claude Code de **cualquier** proyecto de la máquina, no solo de este. Es local: el
+  servidor lee transcripts, no los manda a ningún sitio (ver la nota de privacidad).
+- `--no-terminal` desactiva el terminal embebido: mirar sin poder lanzar ni adjuntar agentes.
+- No modifica Claude Code. Sus datos viven en `~/.pixel-agents/` y su hook en `~/.claude/`.
+
+## Privacidad: qué se comprobó y cómo repetirlo
+
+**systemd no añade aquí ninguna garantía de red.** La unidad se escribió al principio con
+`IPAddressAllow=localhost` + `IPAddressDeny=any`, que sería un cortafuegos de kernel perfecto para
+este caso. En una unidad de **usuario** systemd los acepta y `systemctl show` los lista, pero no
+los aplica: el cortafuegos por cgroup lo instala el gestor del sistema. Comprobado lanzando una
+unidad transitoria con esas mismas propiedades y una conexión saliente — se estableció igual. Por
+eso no están en la unidad: un cortafuegos decorativo es peor que ninguno, porque se cree.
+
+Lo que sí queda en la unidad, y sí se aplica sin privilegios, es `NoNewPrivileges=yes` y
+`RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6`. La garantía real de privacidad sigue siendo la
+de siempre: la auditoría del bundle más la comprobación en ejecución de aquí abajo.
+
+La interfaz ve los transcripts de Claude Code, así que la pregunta "¿esto manda mi código a algún
+sitio?" hay que responderla con evidencia, no con confianza. Lo comprobado, en el paquete instalado
+(`pixel-agents` 1.4.1) y contra el servidor corriendo:
+
+- **Estático**: la única URL del bundle es `http://localhost`. Cero primitivas de salida a red —
+  ni `fetch`, ni `https.request`, ni `axios`/`undici`, ni cliente WebSocket, ni `dns.`. Los hosts
+  son `127.0.0.1` o caen a él por defecto. Sin telemetría, sin analítica, sin recursos remotos en
+  la interfaz. Las dependencias son Fastify y tres plugins suyos.
+- **En ejecución**: escucha **solo** en `127.0.0.1:<puerto>`; las únicas conexiones son
+  loopback→loopback (el navegador). Cero conexiones remotas, antes y después de despachar.
+
+Repetirlo cuesta un comando, y conviene hacerlo tras cada actualización del paquete:
+
+```bash
+PID=$(grep -ho '"pid"[: ]*[0-9]*' ~/.pixel-agents/servers/*.json | grep -o '[0-9]*')
+ss -tnp | grep "pid=$PID" | grep -vE '127\.0\.0\.1|\[::1\]'   # vacío = ninguna conexión remota
+```
+
+`tools/pixel-watch.sh` deja esa vigilancia corriendo y avisa de cualquier conexión no-loopback.
+
+Dos cosas que sí salen de la máquina, y no son de pixel-agents: **los encargos que despachas a la
+flota** viajan a los proveedores de `opencode`, `agy` y `devin`. Por eso los encargos del hivemind
+prohíben explícitamente volcar el contenido de los transcripts, que son conversaciones privadas.
+
+Y el token: la URL con `?token=` es una **capacidad al portador**. El servidor solo escucha en
+loopback, así que su alcance desde fuera es nulo, pero quien lo tenga y alcance el puerto puede
+aprobar la instalación del hook. Se rota reiniciando el servidor.

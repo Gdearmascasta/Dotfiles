@@ -1,0 +1,179 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 zickrian
+
+// The assistant's rules that need nothing of GNOME, kept apart so tests run them anywhere (tests/).
+
+/** What actions run mid-way do, for the island: "Opening Files…", or how many there are. */
+export function describeActions(actions = []) {
+    const [first] = actions;
+    if (!first)
+        return 'Trabajando…';
+    // On unless the action says off.
+    const turning = (name, on) => `${on === false ? 'Desactivando' : 'Activando'} ${name}…`;
+    const what = {
+        open_app: `Abriendo ${first.app ?? 'la app'}…`,
+        open_url: 'Abriendo la página…',
+        open_file: 'Abriendo el archivo…',
+        reveal_file: 'Mostrando el archivo en Archivos…',
+        open_folder: 'Abriendo la carpeta…',
+        chrome_profile: 'Abriendo Chrome…',
+        window: 'Moviendo la ventana…',
+        arrange: 'Ordenando las ventanas…',
+        play_music: 'Reproduciendo música…',
+        media: 'Controlando la música…',
+        close_app: `Cerrando ${first.app ?? 'la app'}…`,
+        volume: Number.isFinite(first.level) ? `Poniendo el volumen al ${first.level}%…` : 'Cambiando el volumen…',
+        brightness: Number.isFinite(first.level) ? `Poniendo el brillo al ${first.level}%…` : 'Cambiando el brillo…',
+        wifi: turning('Wi-Fi', first.on),
+        bluetooth: turning('Bluetooth', first.on),
+        dnd: turning('No molestar', first.on),
+        dark_mode: turning('estilo oscuro', first.on),
+        night_light: turning('Luz nocturna', first.on),
+        power_mode: 'Cambiando el modo de energía…',
+        settings: 'Abriendo Configuración…',
+        add_task: 'Añadiendo una tarea…',
+        done_task: 'Marcando la tarea…',
+        remove_task: 'Quitando la tarea…',
+        add_event: 'Añadiéndolo a tu calendario…',
+        remove_event: 'Quitando el evento…',
+        remind: 'Poniendo un recordatorio…',
+        cancel_reminder: 'Cancelando el recordatorio…',
+        focus: 'Iniciando el temporizador de concentración…',
+        terminal: 'Abriendo una terminal…',
+        run: 'Pidiendo permiso para ejecutarlo…',
+        notifications: 'Abriendo tus notificaciones…',
+        screenshot: 'Haciendo una captura de pantalla…',
+        lock: 'Bloqueando la pantalla…',
+        write: 'Escribiéndolo…',
+    }[first.type] ?? 'Trabajando en ello…';
+    return actions.length > 1 ? `${what.replace(/…$/, '')} y ${actions.length - 1} más…` : what;
+}
+
+/** What isled's runner wraps each command in (see tasks.rs); a command to start must use exactly this. */
+export const RUN_WRAPPER = '( eval "$1" ); printf \'\\n[isle-exit %d]\\n\' "$?"';
+/** As root: the same, its output written to the log by the user ($2, $3) rather than root. */
+export const ROOT_WRAPPER = `{ ${RUN_WRAPPER}; } 2>&1 | chroot --userspec="$2:$3" / tee -a -- "$4" >/dev/null`;
+
+/** Whether `action` starts exactly what its card shows: `systemd-run` with Isle's own options, its log in Isle's
+ * cache, the shown command last. Nothing else starts, even if something posed as isled on the bus. */
+export function runnable(action, {home, cache = `${home}/.cache`, uid, gid}) {
+    const argv = action?.spawn;
+    if (!Array.isArray(argv) || argv[0] !== 'systemd-run' || typeof action.command !== 'string')
+        return false;
+    const end = argv.indexOf('--');
+    const root = !argv.slice(0, end).includes('--user');
+    const logPath = new RegExp(`^${literal(`${cache}/isle/runs/`)}run-[\\w-]+\\.log$`);
+    if (end < 0 || argv.length !== end + (root ? 9 : 6))
+        return false;
+    const [bash, flag, wrapper, name, command, ...rest] = argv.slice(end + 1);
+    // As root it is shown with `sudo` and runs without it; one line, with nothing hidden (see tasks.rs).
+    if (root !== action.command.startsWith('sudo ') || !showsWhole(action.command, MAX_COMMAND + (root ? 5 : 0)))
+        return false;
+    const shown = root ? action.command.replace(/^sudo /, '') : action.command;
+    if (bash !== 'bash' || flag !== '-c' || wrapper !== (root ? ROOT_WRAPPER : RUN_WRAPPER) || name !== 'isle' ||
+        command !== shown)
+        return false;
+    // As root, the output reaches the log through the user, never a file root opens in their home.
+    if (root && (rest[0] !== String(uid) || rest[1] !== String(gid) || !logPath.test(rest[2])))
+        return false;
+    const allowed = [
+        /^--user$/, /^--unit=isle-run-[\w-]+$/, /^--collect$/, /^--quiet$/, /^--property=RuntimeMaxSec=\d+$/,
+        /^--setenv=(DEBIAN_FRONTEND|LANG)=[\w.-]*$/,
+    ];
+    return argv.slice(1, end).every(option => allowed.some(rule => rule.test(option)) ||
+        pathAllowed(option, root) || (!root && option === `--working-directory=${home}`) ||
+        (!root && /^--property=Standard(Output|Error)=append:/.test(option) &&
+            logPath.test(option.replace(/^--property=Standard(Output|Error)=append:/, ''))));
+}
+
+// The PATH a command gets (tasks.rs `path`): the system's folders, and for the user's own commands
+// the folders of their programs first (home, nvm, Homebrew…); as root, nothing the user can write.
+const SYSTEM_PATH = ['/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/snap/bin'];
+
+/** A PATH option passes only as the system's folders, after the user's own absolute ones (none as root). */
+function pathAllowed(option, root) {
+    if (!option.startsWith('--setenv=PATH='))
+        return false;
+    const dirs = option.slice('--setenv=PATH='.length).split(':');
+    const own = dirs.slice(0, dirs.length - SYSTEM_PATH.length);
+    return dirs.slice(own.length).join(':') === SYSTEM_PATH.join(':') && (root ? !own.length
+        : own.every(dir => dir.startsWith('/') && !dir.split('/').includes('..') && !dir.includes('\n')));
+}
+
+// The longest command a card offers (tasks.rs MAX_COMMAND), and what may not be in it: line breaks,
+// control characters, and characters that hide or reorder text.
+const MAX_COMMAND = 400;
+const HIDDEN = /[\u00ad\u061c\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/u;
+
+/** Whether `text` shows as it is, whole, on one line of at most `max` characters. */
+export function showsWhole(text, max) {
+    return [...text].length <= max && !HIDDEN.test(text) &&
+        ![...text].some(c => c.charCodeAt(0) < 0x20 || (c.charCodeAt(0) >= 0x7f && c.charCodeAt(0) <= 0x9f));
+}
+
+/** Whether a window `title` names `project` as a word of its own: "isle — Terminal", not "WhatsApp" for "app". */
+export function namesProject(title, project) {
+    if (!project)
+        return false;
+    const escaped = project.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(^|[^\\p{L}\\p{N}_-])${escaped}($|[^\\p{L}\\p{N}_-])`, 'u').test(title);
+}
+
+/** Whether `argv` only stops one of Isle's commands. */
+export function stoppable(argv) {
+    return Array.isArray(argv) && argv[0] === 'systemctl' &&
+        (argv.length === 3 || (argv.length === 4 && argv[1] === '--user')) &&
+        argv.at(-2) === 'stop' && /^isle-run-[\w-]+$/.test(argv.at(-1));
+}
+
+/** `text` escaped to match itself inside a RegExp. */
+const literal = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Parts of the screen's work area, as [x, y, width, height] shares of it: where one window goes...
+export const TILES = {
+    left: [0, 0, 0.5, 1],
+    right: [0.5, 0, 0.5, 1],
+    top: [0, 0, 1, 0.5],
+    bottom: [0, 0.5, 1, 0.5],
+    top_left: [0, 0, 0.5, 0.5],
+    top_right: [0.5, 0, 0.5, 0.5],
+    bottom_left: [0, 0.5, 0.5, 0.5],
+    bottom_right: [0.5, 0.5, 0.5, 0.5],
+    center: [0.125, 0.1, 0.75, 0.8],
+};
+// ...and where several go, left to right and top to bottom.
+const LAYOUTS = {
+    halves: [TILES.left, TILES.right],
+    rows: [TILES.top, TILES.bottom],
+    quarters: [TILES.top_left, TILES.top_right, TILES.bottom_left, TILES.bottom_right],
+    thirds: [[0, 0, 1 / 3, 1], [1 / 3, 0, 1 / 3, 1], [2 / 3, 0, 1 / 3, 1]],
+};
+
+/** The places for `count` windows in `layout`, or in a grid that fits them when it names none. */
+export function slotsFor(layout, count) {
+    if (LAYOUTS[layout])
+        return LAYOUTS[layout];
+    if (count <= 1)
+        return [[0, 0, 1, 1]];
+    if (count <= 4)
+        return [LAYOUTS.halves, LAYOUTS.thirds, LAYOUTS.quarters][count - 2];
+    const columns = 3;
+    const rows = Math.ceil(count / columns);
+    return Array.from({length: count}, (_, i) =>
+        [(i % columns) / columns, Math.floor(i / columns) / rows, 1 / columns, 1 / rows]);
+}
+
+/** An action that could not be done, and why. */
+export function failed(detail) {
+    return {ok: false, detail};
+}
+
+// What an action returned, as {ok, detail}: nothing (or a call's reply) is done, a string says what it
+// did, an {ok, detail} is taken as it is, and false, '' or null (a failed call) is not done.
+export function outcomeOf(outcome) {
+    if (typeof outcome?.ok === 'boolean')
+        return {ok: outcome.ok, detail: typeof outcome.detail === 'string' ? outcome.detail : ''};
+    if (typeof outcome === 'string' && outcome)
+        return {ok: true, detail: outcome};
+    return {ok: outcome === undefined || outcome === true || Array.isArray(outcome), detail: ''};
+}

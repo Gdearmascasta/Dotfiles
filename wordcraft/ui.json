@@ -1,0 +1,43 @@
+{
+  "tab": "Home",
+  "backstage": false,
+  "backstagePage": "info",
+  "ribbonCollapsed": false,
+  "recent": [],
+  "recentSymbols": [],
+  "theme": "light",
+  "navTab": "headings",
+  "showDiscord": true,
+  "author": "WordCraft User",
+  "window": {
+    "position": null,
+    "width": 1440.0,
+    "height": 920.0,
+    "maximized": true,
+    "monitor": [
+      1920.0,
+      1080.0
+    ]
+  },
+  "language": "auto",
+  "editing": {
+    "countNotes": true,
+    "markup": {
+      "comments": true,
+      "ink": true,
+      "insertionsDeletions": true,
+      "formatting": true,
+      "balloons": "commentsAndFormatting",
+      "insertMark": "underline",
+      "insertColor": null,
+      "deleteMark": "strikethrough",
+      "deleteColor": null,
+      "changedLines": "outside",
+      "changedLinesColor": null,
+      "trackFormatting": true
+    }
+  },
+  "readAloudRate": 1.0,
+  "readAloudSkipCitations": true,
+  "darkPage": false
+}

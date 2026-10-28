@@ -1,0 +1,3 @@
+{"mcp":{"engram":{"command":["/home/gcasta/.local/bin/engram","mcp","--tools=agent"],"enabled":true,"type":"local"}},
+  "$schema": "https://opencode.ai/config.json"
+}

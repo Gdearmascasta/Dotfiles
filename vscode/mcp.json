@@ -1,0 +1,42 @@
+{
+  "servers": {
+    "datacloud_bigquery_remote": {
+      "type": "http",
+      "url": "https://bigquery.googleapis.com/mcp",
+      "authProviderType": "google_credentials",
+      "headers": {
+        "User-Agent": "datacloud.vscode"
+      },
+      "oauth": {
+        "scopes": [
+          "https://www.googleapis.com/auth/bigquery",
+          "https://www.googleapis.com/auth/cloud-platform"
+        ]
+      }
+    },
+    "datacloud_cloud-sql_remote": {
+      "type": "http",
+      "url": "https://sqladmin.googleapis.com/mcp",
+      "authProviderType": "google_credentials",
+      "headers": {
+        "User-Agent": "datacloud.vscode"
+      },
+      "oauth": {
+        "scopes": [
+          "https://www.googleapis.com/auth/cloud-platform"
+        ]
+      }
+    },
+    "datacloud_dataproc_remote": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\German\\.vscode\\google_data_cloud_tools\\mcp_proxy.js",
+        "https://dataproc-${REGION}.googleapis.com/mcp"
+      ],
+      "env": {
+        "X_GOOG_IS_CLOUD_SHELL": "false",
+        "X_GOOG_PROXY_HEADERS": "{\"User-Agent\":\"datacloud.vscode\"}"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+fedora	org.kde.marknote
+flathub	com.brave.Browser
+flathub	com.obsproject.Studio
+flathub	com.visualstudio.code
+flathub	io.podman_desktop.PodmanDesktop
+flathub	org.pgadmin.pgadmin4
+spotifast-origin	rocks.spotifast.Spotifast

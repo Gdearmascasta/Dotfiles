@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="app-grid-tuner">
+  <schema id="org.gnome.shell.extensions.app-grid-tuner" path="/org/gnome/shell/extensions/app-grid-tuner/">
+    <key name="appgrid-max-rows" type="i">
+      <range min="1" max="20"/>
+      <default>4</default>
+      <summary>Maximum rows in app grid</summary>
+      <description>Number of rows for the applications grid.</description>
+    </key>
+    <key name="appgrid-max-columns" type="i">
+      <range min="1" max="20"/>
+      <default>6</default>
+      <summary>Maximum columns in app grid</summary>
+      <description>Number of columns for the applications grid.</description>
+    </key>
+    <key name="appgrid-icon-size" type="i">
+      <range min="32" max="256"/>
+      <default>64</default>
+      <summary>App icon size</summary>
+      <description>Icon size for app grid icons.</description>
+    </key>
+    <key name="side-padding" type="i">
+      <range min="-128" max="256"/>
+      <default>0</default>
+      <summary>Side padding</summary>
+      <description>Horizontal side padding inside the app grid. Can be negative to override system padding.</description>
+    </key>
+    <key name="label-style" type="s">
+      <choices>
+        <choice value=""/>
+        <choice value="font-weight: normal;"/>
+        <choice value="font-weight: normal; text-shadow: 2px 3px 3px #000000;"/>
+        <choice value="font-weight: bold;"/>
+        <choice value="font-weight: bold; text-shadow: 2px 3px 3px #000000;"/>
+      </choices>
+      <default>''</default>
+      <summary>Label style</summary>
+      <description>CSS style string applied to the app icon label.</description>
+    </key>
+    <key name="label-color" type="s">
+      <default>''</default>
+      <summary>Label color</summary>
+      <description>Label color for the app grid icons. Can be a custom hex code or a legacy style class name. Leave empty to use the system default label color.</description>
+    </key>
+    <key name="label-shadow-color" type="s">
+      <default>'#000000'</default>
+      <summary>Label shadow color</summary>
+      <description>Shadow color for app grid labels when a shadow label style is selected.</description>
+    </key>
+    <key name="open-animation-time" type="i">
+      <range min="1" max="10000"/>
+      <default>250</default>
+      <summary>Open animation time</summary>
+      <description>Animation time in milliseconds for opening overview side controls.</description>
+    </key>
+    <key name="page-switch-animation-time" type="i">
+      <range min="1" max="10000"/>
+      <default>300</default>
+      <summary>Page switch animation time</summary>
+      <description>Animation time in milliseconds when switching pages.</description>
+    </key>
+    <key name="folder-max-rows" type="i">
+      <range min="1" max="20"/>
+      <default>3</default>
+      <summary>Maximum rows in folder view</summary>
+      <description>Number of rows for a folder popup grid.</description>
+    </key>
+    <key name="folder-max-columns" type="i">
+      <range min="1" max="20"/>
+      <default>3</default>
+      <summary>Maximum columns in folder view</summary>
+      <description>Number of columns for a folder popup grid.</description>
+    </key>
+    <key name="folder-icon-size" type="i">
+      <range min="32" max="256"/>
+      <default>64</default>
+      <summary>Folder icon size</summary>
+      <description>Icon size for app icons inside a folder.</description>
+    </key>
+    <key name="hide-folder-title" type="b">
+      <default>false</default>
+      <summary>Hide folder title</summary>
+      <description>Hide the folder name/title entry in the folder popup.</description>
+    </key>
+    <key name="folder-popup-width" type="i">
+      <range min="400" max="800"/>
+      <default>640</default>
+      <summary>Folder popup width</summary>
+      <description>Minimum width in pixels for folder popup dialog.</description>
+    </key>
+    <key name="folder-popup-height-offset" type="i">
+      <range min="50" max="300"/>
+      <default>152</default>
+      <summary>Folder popup height offset</summary>
+      <description>Additional height offset for folder popup dialog.</description>
+    </key>
+    <key name="folder-item-spacing" type="i">
+      <range min="40" max="150"/>
+      <default>78</default>
+      <summary>Folder item spacing</summary>
+      <description>Horizontal spacing between items in folder popup.</description>
+    </key>
+    <key name="folder-item-height-offset" type="i">
+      <range min="30" max="120"/>
+      <default>72</default>
+      <summary>Folder item height offset</summary>
+      <description>Extra height added to each item row inside the folder popup in pixels.</description>
+    </key>
+    <key name="folder-icon-font-size" type="d">
+      <range min="0.0" max="48.0"/>
+      <default>0</default>
+      <summary>Folder icon label font size</summary>
+      <description>Font size in pixels for app labels inside folders. 0 uses the system default.</description>
+    </key>
+    <key name="app-icon-font-size" type="d">
+      <range min="0" max="48"/>
+      <default>0</default>
+      <summary>App icon label font size</summary>
+      <description>Font size in pixels for app labels. 0 uses the system default.</description>
+    </key>
+    <key name="app-hover-tile-enabled" type="b">
+      <default>false</default>
+      <summary>Enable hover tile for app icons (theme-dependent)</summary>
+      <description>When enabled, app icons in the app grid get a highlighted tile background on hover. The exact appearance can depend on your GNOME Shell theme and version.</description>
+    </key>
+    <key name="app-hover-tile-background-color" type="s">
+      <default>'#ffffff'</default>
+      <summary>App hover tile background color</summary>
+      <description>Background color for the app icon tile on hover. Empty uses a subtle default.</description>
+    </key>
+    <key name="app-hover-tile-background-opacity" type="d">
+      <range min="0.0" max="1.0"/>
+      <default>0.10</default>
+      <summary>App hover tile background opacity</summary>
+      <description>Opacity for the app hover tile background color (0.0 = fully transparent, 1.0 = fully opaque).</description>
+    </key>
+    <key name="app-hover-tile-border-color" type="s">
+      <default>''</default>
+      <summary>App hover tile border color</summary>
+      <description>Border color for the app icon tile on hover. Empty uses a subtle default.</description>
+    </key>
+    <key name="app-hover-tile-border-radius" type="i">
+      <range min="0" max="64"/>
+      <default>18</default>
+      <summary>App hover tile border radius</summary>
+      <description>Corner radius in pixels for the app icon tile on hover. 0 uses the theme default.</description>
+    </key>
+    <key name="folder-popup-background-color" type="s">
+      <default>''</default>
+      <summary>Folder popup background color</summary>
+      <description>Background color for the folder popup dialog. Empty uses the theme default.</description>
+    </key>
+    <key name="folder-popup-background-opacity" type="d">
+      <range min="0.0" max="1.0"/>
+      <default>0.92</default>
+      <summary>Folder popup background opacity</summary>
+      <description>Opacity for the folder popup background color (0.0 = fully transparent, 1.0 = fully opaque).</description>
+    </key>
+    <key name="folder-popup-border-color" type="s">
+      <default>''</default>
+      <summary>Folder popup border color</summary>
+      <description>Border color for the folder popup dialog. Empty uses the theme default.</description>
+    </key>
+    <key name="folder-popup-border-radius" type="i">
+      <range min="0" max="64"/>
+      <default>32</default>
+      <summary>Folder popup border radius</summary>
+      <description>Corner radius in pixels for the folder popup dialog. 0 uses the theme default.</description>
+    </key>
+    <key name="folder-tile-background-color" type="s">
+      <default>''</default>
+      <summary>Folder tile background color</summary>
+      <description>Background color for the app grid folder tile. Empty uses the theme default.</description>
+    </key>
+    <key name="folder-tile-background-opacity" type="d">
+      <range min="0.0" max="1.0"/>
+      <default>0.16</default>
+      <summary>Folder tile background opacity</summary>
+      <description>Opacity for the app grid folder tile background color (0.0 = fully transparent, 1.0 = fully opaque).</description>
+    </key>
+    <key name="folder-tile-border-color" type="s">
+      <default>''</default>
+      <summary>Folder tile border color</summary>
+      <description>Border color for the app grid folder tile. Empty uses the theme default.</description>
+    </key>
+    <key name="folder-tile-border-radius" type="i">
+      <range min="0" max="64"/>
+      <default>24</default>
+      <summary>Folder tile border radius</summary>
+      <description>Corner radius in pixels for the app grid folder tile. 0 uses the theme default.</description>
+    </key>
+    <key name="folder-side-padding" type="i">
+      <range min="-128" max="256"/>
+      <default>24</default>
+      <summary>Folder side padding</summary>
+      <description>Horizontal padding in pixels inside the folder popup. Can be negative for tighter layouts.</description>
+    </key>
+    <key name="reload-signal" type="b">
+      <default>false</default>
+      <summary>Reload signal</summary>
+      <description>Internal flag toggled to ask the running extension to reload settings.</description>
+    </key>
+    <key name="appgrid-background-mode" type="s">
+      <choices>
+        <choice value="system"/>
+        <choice value="solid-color"/>
+        <choice value="gradient"/>
+      </choices>
+      <default>'system'</default>
+      <summary>App grid background mode</summary>
+      <description>Controls the background of the app grid: system default, solid color, or gradient.</description>
+    </key>
+    <key name="appgrid-background-color" type="s">
+      <default>'#0f172a'</default>
+      <summary>App grid background color</summary>
+      <description>Hex color used when background mode is solid-color. Empty uses the theme default.</description>
+    </key>
+    <key name="appgrid-gradient-type" type="s">
+      <choices>
+        <choice value="linear-vertical"/>
+        <choice value="linear-horizontal"/>
+      </choices>
+      <default>'linear-vertical'</default>
+      <summary>App grid gradient type</summary>
+      <description>Gradient type when background mode is gradient: linear-vertical or linear-horizontal.</description>
+    </key>
+    <key name="appgrid-gradient-secondary-color" type="s">
+      <default>''</default>
+      <summary>App grid gradient secondary color</summary>
+      <description>Secondary hex color for gradients. Empty uses an automatically derived color from the primary background color.</description>
+    </key>
+  </schema>
+</schemalist>

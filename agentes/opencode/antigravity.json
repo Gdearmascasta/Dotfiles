@@ -1,0 +1,5 @@
+{
+  "account_selection_strategy": "sticky",
+  "request_jitter_max_ms": 1500,
+  "soft_quota_threshold_percent": 80
+}

@@ -1,0 +1,7 @@
+*.bak*
+node_modules/
+# Secretos que nunca deben entrar al repo
+.credentials.json
+review-context.key
+agentes/opencode/config.json
+agentes/opencode/service.json

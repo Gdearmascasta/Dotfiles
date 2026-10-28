@@ -1,0 +1,142 @@
+{
+  "enabledPlugins": {
+    "engram@engram": true
+  },
+  "extraKnownMarketplaces": {
+    "engram": {
+      "source": {
+        "repo": "Gentleman-Programming/engram",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/gcasta/.claude/hooks/protect-secrets.js\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/gcasta/.claude/hooks/handoff-reminder.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"/home/gcasta/.claude/hooks/andromeda-context.js\""
+          },
+          {
+            "type": "command",
+            "command": "node \"/home/gcasta/.claude/hooks/hivemind-toggle.js\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "gentle-ai review stop-hook --agent claude-code",
+            "timeout": 30,
+            "type": "command"
+          }
+        ],
+        "matcher": "startup|resume|clear|compact"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "gentle-ai review stop-hook --agent claude-code",
+            "timeout": 60,
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "gentle-ai telemetry runtime claude --json",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/gcasta/.local/bin/isled --agent-hook claude"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "gentle-ai telemetry runtime claude --json",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "gentle-ai skill-registry refresh --quiet --no-gitignore --cwd \"${CLAUDE_PROJECT_DIR:-$PWD}\" || true",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/home/gcasta/.claude/hooks/engram-obsidian.js\""
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/gcasta/.local/bin/isled --agent-hook claude",
+            "timeout": 600
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/gcasta/.local/bin/isled --agent-hook claude"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "opus",
+  "theme": "dark"
+}

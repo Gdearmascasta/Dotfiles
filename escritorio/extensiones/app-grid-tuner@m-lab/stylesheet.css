@@ -1,0 +1,75 @@
+.app-grid-tuner-label-blue,
+.app-grid-tuner-label-blue .icon-label,
+.app-grid-tuner-label-blue .overview-icon-label,
+.app-grid-tuner-label-blue StLabel {
+  color: #3584e4 !important;
+}
+
+.app-grid-tuner-label-green,
+.app-grid-tuner-label-green .icon-label,
+.app-grid-tuner-label-green .overview-icon-label,
+.app-grid-tuner-label-green StLabel {
+  color: #33d17a !important;
+}
+
+.app-grid-tuner-label-orange,
+.app-grid-tuner-label-orange .icon-label,
+.app-grid-tuner-label-orange .overview-icon-label,
+.app-grid-tuner-label-orange StLabel {
+  color: #ff7800 !important;
+}
+
+.app-grid-tuner-label-red,
+.app-grid-tuner-label-red .icon-label,
+.app-grid-tuner-label-red .overview-icon-label,
+.app-grid-tuner-label-red StLabel {
+  color: #e01b24 !important;
+}
+
+.app-grid-tuner-custom-color .icon-label,
+.app-grid-tuner-custom-color .overview-icon-label,
+.app-grid-tuner-custom-color StLabel {
+  color: inherit !important;
+}
+
+.app-grid-tuner-hide-folder-title {
+  overflow: hidden !important;
+}
+
+.app-grid-tuner-hide-folder-title .folder-name-container,
+.app-grid-tuner-hide-folder-title .folder-name-entry,
+.app-grid-tuner-hide-folder-title .folder-name-label,
+.app-grid-tuner-hide-folder-title .edit-folder-button,
+.app-grid-tuner-hide-folder-title StEntry {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0px !important;
+  min-height: 0px !important;
+  max-height: 0px !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  border: none !important;
+  box-shadow: none !important;
+  caret-size: 0px !important;
+  selection-background-color: transparent !important;
+  selected-color: transparent !important;
+}
+
+.app-grid-tuner-bg-transparent {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Default hover tile styling for app icons.
+ * Dynamic stylesheet rules may override these values when the user
+ * customizes App tiles in preferences, but this ensures a sensible
+ * baseline even if dynamic CSS is not active.
+ */
+.app-grid-tuner-app-hover .app-well-app:hover,
+.app-grid-tuner-app-hover .overview-icon:hover {
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+}

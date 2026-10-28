@@ -1,0 +1,11 @@
+{
+    "geminicodeassist.project": "rational-talon-464616-t0",
+    "python.defaultInterpreterPath": "/home/gcasta/.venvs/quarto/bin/python",
+    "claudeCode.preferredLocation": "panel",
+    "claudeCode.hideOnboarding": true,
+    "quarto.path": "/home/gcasta/opt/quarto-1.10.18/bin/quarto",
+    "terminal.integrated.env.linux": {
+        "QUARTO_PYTHON": "/home/gcasta/.venvs/quarto/bin/python",
+        "PATH": "/home/gcasta/.local/bin:${env:PATH}"
+    }
+}

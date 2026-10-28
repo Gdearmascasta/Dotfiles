@@ -1,0 +1,6 @@
+{
+  "uuid": "rec-after-vitals@gcasta",
+  "name": "Grabación después de Vitals",
+  "description": "Coloca el indicador de grabación de pantalla a la derecha de Vitals en la barra superior.",
+  "shell-version": ["50"]
+}

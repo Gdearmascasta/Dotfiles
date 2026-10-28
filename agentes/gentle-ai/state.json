@@ -1,0 +1,24 @@
+{
+  "installed_agents": [
+    "claude-code",
+    "opencode"
+  ],
+  "managed_asset_digest": "sha256:390dc4a930494a1481c8a915e079de3c55614468cad22f78e8960859df3a01b2",
+  "selection_configured": true,
+  "components": [
+    "engram",
+    "skills",
+    "context7"
+  ],
+  "skills": [
+    "judgment-day",
+    "chained-pr",
+    "work-unit-commits",
+    "cognitive-doc-design",
+    "skill-improver",
+    "skill-registry"
+  ],
+  "preset": "custom",
+  "persona": "custom",
+  "last_update_check": "2026-10-24T09:01:52.104390981-05:00"
+}

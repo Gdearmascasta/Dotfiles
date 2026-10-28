@@ -1,0 +1,22 @@
+{
+  "brightness": "light",
+  "tab": "Home",
+  "ribbonCollapsed": false,
+  "view": "normal",
+  "notes": true,
+  "notesHeight": 43.4375,
+  "thumbsWidth": 220.0,
+  "pane": null,
+  "paneWidth": 299.0,
+  "ruler": false,
+  "gridlines": false,
+  "guides": false,
+  "smartGuides": true,
+  "zoom": null,
+  "sorterZoom": 1.0,
+  "recent": [],
+  "presenterView": true,
+  "uiScale": 1.0,
+  "formatTab": "fill",
+  "grayscale": false
+}
