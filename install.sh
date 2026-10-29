@@ -270,8 +270,12 @@ clonar_neptuno() {
 	[[ -d $destino/.git ]] && return
 	info "NEPTUNO"
 	mkdir -p "$(dirname "$destino")"
-	git clone -q https://github.com/Jmyukopila/NEPTUNO.git "$destino"
-	echo "  clonado en $destino"
+	# El repo puede volverse privado o cambiar de sitio; la configuración de los agentes ya está en agentes/.
+	if git clone -q https://github.com/Jmyukopila/NEPTUNO.git "$destino"; then
+		echo "  clonado en $destino"
+	else
+		aviso "No se pudo clonar NEPTUNO; la configuración de Claude y opencode ya quedó restaurada desde agentes/"
+	fi
 }
 
 configurar_filtro
