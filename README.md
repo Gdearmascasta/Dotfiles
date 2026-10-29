@@ -23,6 +23,11 @@ git clone https://github.com/Gdearmascasta/Dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 ```
 
+En Ubuntu la terminal toma la paleta de la marca Ubuntu (fondo aubergine y acentos naranja en
+kitty, `fastfetch/ubuntu.jsonc`) con el logo de Ubuntu y los mismos módulos e iconos que en Fedora.
+Ubuntu 24.04 no trae fastfetch, así que ahí se usa `neofetch/config.conf` con el mismo diseño. Los
+dos los genera `python3 tema-ubuntu.py` a partir de `fastfetch/config.jsonc`: ejecútalo si lo cambias.
+
 En Ubuntu el script usa `paquetes/apt.txt` (omite lo que no exista en esa versión), cambia los
 flatpaks de remotos de Fedora por Flathub y suma tus extensiones a las del sistema, sin apagar el
 dock de Ubuntu. Avisa de las extensiones que no declaran la versión de GNOME instalada.
@@ -36,6 +41,11 @@ Después, cierra sesión y vuelve a entrar para que GNOME cargue extensiones y t
 Si solo clonas el repo para editarlo, ejecuta antes `./install.sh --solo-enlaces` o `./backup.sh`: activan el
 filtro que quita los datos personales y el hook que impide hacer commit sin él. Para hacer push
 necesitas permiso de escritura en el repo (SSH o `gh auth login`).
+
+En un equipo que ya usa los dotfiles, ejecuta `./backup.sh` antes de `./install.sh --solo-enlaces`.
+Algunas apps (OBS, GTK) reemplazan el enlace por un archivo nuevo al guardar: `backup.sh` lo devuelve
+al repo, mientras que `install.sh` solo lo aparta a `~/.dotfiles-respaldo/` y vuelve a enlazar la
+versión del repo, que es más vieja.
 
 Opciones: `--solo-enlaces`, `--sin-paquetes`, `--sin-recursos`, `--sin-agentes`, `--sin-gnome`, `--sin-neptuno`.
 

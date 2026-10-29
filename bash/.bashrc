@@ -3,8 +3,20 @@
 #######################################################
 # SOURCED ALIAS'S AND SCRIPTS BY zachbrowne.me
 #######################################################
-if [[ $iatest -gt 0 ]] && command -v fastfetch >/dev/null 2>&1; then
-	fastfetch
+if [[ $iatest -gt 0 ]]; then
+	# Cada distro usa su tema de fastfetch si existe (~/.config/fastfetch/ubuntu.jsonc); Ubuntu 24.04
+	# no trae fastfetch, así que ahí se usa neofetch con el mismo diseño (ver tema-ubuntu.py).
+	_fetch_id=$(. /etc/os-release 2>/dev/null; echo "${ID:-}")
+	if command -v fastfetch >/dev/null 2>&1; then
+		if [[ -n $_fetch_id && -f ~/.config/fastfetch/$_fetch_id.jsonc ]]; then
+			fastfetch -c ~/.config/fastfetch/"$_fetch_id".jsonc
+		else
+			fastfetch
+		fi
+	elif command -v neofetch >/dev/null 2>&1; then
+		neofetch
+	fi
+	unset _fetch_id
 fi
 
 _bashrc_os=$(uname -s 2>/dev/null || echo unknown)

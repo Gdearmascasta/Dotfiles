@@ -277,6 +277,15 @@ crear_enlaces() {
 			ln -sfn "$tema/$f" "$HOME/.config/gtk-4.0/$f"
 		done
 	fi
+
+	# kitty.conf incluye distro.conf: los colores de esta distro, si hay tema en kitty/temas/.
+	local id distro="$HOME/.config/kitty/distro.conf"
+	id="$(. /etc/os-release 2>/dev/null; echo "${ID:-}")"
+	if [[ -n $id && -f $DOTFILES/kitty/temas/$id.conf ]]; then
+		ln -sfn "temas/$id.conf" "$distro"
+	elif [[ -L $distro ]]; then
+		rm "$distro"
+	fi
 }
 
 aplicar_gnome() {

@@ -11,6 +11,7 @@ ENLACES=(
 	"cava          $HOME/.config/cava                              config shaders"
 	"fastfetch     $HOME/.config/fastfetch                         config.jsonc"
 	"kitty         $HOME/.config/kitty                             kitty.conf"
+	"neofetch      $HOME/.config/neofetch                          config.conf"
 	"ghostty       $HOME/.config/ghostty                           config wallust.conf"
 	"wezterm       $HOME/.config/wezterm                           wezterm.lua"
 	"starship      $HOME/.config                                   starship.toml"

@@ -27,6 +27,9 @@ bat
 btop
 cava
 fastfetch
+# neofetch sustituye a fastfetch donde no existe (Ubuntu 24.04); playerctl da el reproductor y la canción
+neofetch
+playerctl
 fzf
 lsd
 eza
