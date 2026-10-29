@@ -50,7 +50,8 @@ instalar_paquetes() {
 		info "Flatpaks"
 		flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 		local origen app remotos
-		remotos="$(flatpak remotes --columns=name)"
+		# Solo los remotos del usuario: los del sistema (p. ej. "fedora") no sirven con --user.
+		remotos="$(flatpak remotes --user --columns=name)"
 		while read -r origen app; do
 			# "<app>-origin" es un paquete .flatpak suelto: lo instala instalar_apps_github.
 			[[ $origen == *-origin ]] && continue
