@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Después de un git pull, enlaza los archivos nuevos del repo sin apartar ninguno (lib.sh).
+source "$(git rev-parse --show-toplevel)/lib.sh"
+enlazar_nuevos

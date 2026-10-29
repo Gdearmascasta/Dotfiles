@@ -11,6 +11,7 @@ ENLACES=(
 	"cava          $HOME/.config/cava                              config shaders"
 	"fastfetch     $HOME/.config/fastfetch                         config.jsonc"
 	"kitty         $HOME/.config/kitty                             kitty.conf"
+	"aplicaciones  $HOME/.local/share/applications                 kitty.desktop"
 	"neofetch      $HOME/.config/neofetch                          config.conf"
 	"ghostty       $HOME/.config/ghostty                           config wallust.conf"
 	"wezterm       $HOME/.config/wezterm                           wezterm.lua"
@@ -117,6 +118,34 @@ configurar_filtro() {
 		git -C "$DOTFILES" diff --quiet -- "$f" || continue
 		rm -f "$DOTFILES/$f" && git -C "$DOTFILES" checkout -- "$f"
 	done < <(git -C "$DOTFILES" grep -lzF '@HOME@' -- . ':!README.md' ':!filtros' ':!lib.sh' ':!install.sh' ':!backup.sh' || true)
+}
+
+# kitty.conf incluye distro.conf: los colores de esta distro, si hay tema en kitty/temas/.
+tema_kitty() {
+	local id distro="$HOME/.config/kitty/distro.conf"
+	[[ -d $HOME/.config/kitty ]] || return 0
+	id="$(. /etc/os-release 2>/dev/null; echo "${ID:-}")"
+	if [[ -n $id && -f $DOTFILES/kitty/temas/$id.conf ]]; then
+		ln -sfn "temas/$id.conf" "$distro"
+	elif [[ -L $distro ]]; then
+		rm "$distro"
+	fi
+}
+
+# Enlaza lo que falte sin apartar nada: si un destino ya tiene un archivo propio, stow no toca
+# ese paquete y se avisa. Lo usa el hook post-merge después de cada git pull.
+enlazar_nuevos() {
+	command -v stow >/dev/null || return 0
+	local linea paquete destino
+	for linea in "${ENLACES[@]}"; do
+		read -r paquete destino _ <<<"$linea"
+		# Un destino que es enlace viene de la estructura vieja: eso lo arregla install.sh.
+		[[ -d $DOTFILES/$paquete && ! -L $destino ]] || continue
+		mkdir -p "$destino"
+		stow -d "$DOTFILES" -t "$destino" "$paquete" 2>/dev/null ||
+			aviso "$paquete: hay archivos propios en $destino; ejecuta ./backup.sh y luego ./install.sh --solo-enlaces"
+	done
+	tema_kitty
 }
 
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
