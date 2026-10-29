@@ -5,3 +5,4 @@ node_modules/
 review-context.key
 agentes/opencode/config.json
 agentes/opencode/service.json
+agentes/opencode/antigravity-accounts.json

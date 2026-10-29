@@ -58,9 +58,9 @@ filtro_copia() {
 			'- *'
 		;;
 	agentes/opencode)
-		# config.json y service.json guardan una API key y una contraseña.
+		# config.json, service.json y antigravity-accounts.json guardan una API key, una contraseña y cuentas.
 		printf '%s\n' '- node_modules/' '- *.bak*' '- /config.json' '- /service.json' \
-			'- /.gentle-ai-telemetry-runtime.json' '- /.Rhistory'
+			'- /antigravity-accounts.json' '- /.gentle-ai-telemetry-runtime.json' '- /.Rhistory'
 		;;
 	agentes/gentle-ai)
 		# review-context.key es una clave privada: no sale de la máquina.
