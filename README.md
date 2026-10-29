@@ -5,21 +5,37 @@ y la configuración de Claude Code, opencode y gentle-ai (NEPTUNO).
 
 ## Instalar en un PC nuevo
 
+El repo es público: se clona por HTTPS, sin clave SSH ni cuenta de GitHub.
+
+Fedora:
+
 ```bash
 sudo dnf install -y git stow rsync
-git clone git@github.com:Gdearmascasta/Dotfiles.git ~/dotfiles
+git clone https://github.com/Gdearmascasta/Dotfiles.git ~/dotfiles
 ~/dotfiles/install.sh
 ```
 
-Si solo clonas el repo para editarlo, ejecuta antes `./install.sh --solo-enlaces` o `./backup.sh`: activan el
-filtro que quita los datos personales y el hook que impide hacer commit sin él.
+Ubuntu/Debian:
 
-En Ubuntu/Debian, la primera línea es `sudo apt install -y git stow rsync`. El script usa
-`paquetes/apt.txt` (omite lo que no exista en esa versión), cambia los flatpaks de remotos de
-Fedora por Flathub y suma tus extensiones a las del sistema, sin apagar el dock de Ubuntu.
-Avisa de las extensiones que no declaran la versión de GNOME instalada.
+```bash
+sudo apt install -y git stow rsync
+git clone https://github.com/Gdearmascasta/Dotfiles.git ~/dotfiles
+~/dotfiles/install.sh
+```
+
+En Ubuntu el script usa `paquetes/apt.txt` (omite lo que no exista en esa versión), cambia los
+flatpaks de remotos de Fedora por Flathub y suma tus extensiones a las del sistema, sin apagar el
+dock de Ubuntu. Avisa de las extensiones que no declaran la versión de GNOME instalada.
+
+Pide la contraseña de sudo para los paquetes y descarga unos 700 MB de iconos y fuentes. Antes
+conviene crear un punto de restauración del sistema:
+`sudo timeshift --create --comments "antes de dotfiles"` (Timeshift se instala con dnf o apt).
 
 Después, cierra sesión y vuelve a entrar para que GNOME cargue extensiones y tema.
+
+Si solo clonas el repo para editarlo, ejecuta antes `./install.sh --solo-enlaces` o `./backup.sh`: activan el
+filtro que quita los datos personales y el hook que impide hacer commit sin él. Para hacer push
+necesitas permiso de escritura en el repo (SSH o `gh auth login`).
 
 Opciones: `--solo-enlaces`, `--sin-paquetes`, `--sin-recursos`, `--sin-gnome`, `--sin-neptuno`.
 Lo que ocupaba el sitio de un enlace no se borra: queda en `~/.dotfiles-respaldo/<fecha>/`.

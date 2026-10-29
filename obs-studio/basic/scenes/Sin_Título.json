@@ -1,7 +1,7 @@
 {
   "name": "Sin Título",
   "DesktopAudioDevice1": {
-    "prev_ver": 537001986,
+    "prev_ver": 553648128,
     "name": "Audio del escritorio",
     "uuid": "e316815c-e795-4af9-913d-f1158f274582",
     "id": "pulse_output_capture",
@@ -23,16 +23,19 @@
     "hotkeys": {
       "libobs.mute": [],
       "libobs.unmute": [],
+      "libobs.monitor-on": [],
+      "libobs.monitor-off": [],
       "libobs.push-to-mute": [],
       "libobs.push-to-talk": []
     },
     "deinterlace_mode": 0,
     "deinterlace_field_order": 0,
     "monitoring_type": 0,
+    "monitoring_enabled": false,
     "private_settings": {}
   },
   "AuxAudioDevice1": {
-    "prev_ver": 537001986,
+    "prev_ver": 553648128,
     "name": "Mic/Aux",
     "uuid": "61cde09b-8c29-4146-88ae-a447fb9edea6",
     "id": "pulse_input_capture",
@@ -43,7 +46,7 @@
     "mixers": 255,
     "sync": 0,
     "flags": 0,
-    "volume": 0.194977805018425,
+    "volume": 0.13604943454265594,
     "balance": 0.5,
     "enabled": true,
     "muted": false,
@@ -54,17 +57,20 @@
     "hotkeys": {
       "libobs.mute": [],
       "libobs.unmute": [],
+      "libobs.monitor-on": [],
+      "libobs.monitor-off": [],
       "libobs.push-to-mute": [],
       "libobs.push-to-talk": []
     },
     "deinterlace_mode": 0,
     "deinterlace_field_order": 0,
     "monitoring_type": 0,
+    "monitoring_enabled": false,
     "private_settings": {}
   },
   "sources": [
     {
-      "prev_ver": 537001986,
+      "prev_ver": 553648128,
       "name": "Captura de pantalla (PipeWire)",
       "uuid": "a6b9477c-bb35-4de6-8124-a49bf400584f",
       "id": "pipewire-screen-capture-source",
@@ -85,10 +91,11 @@
       "deinterlace_mode": 0,
       "deinterlace_field_order": 0,
       "monitoring_type": 0,
+      "monitoring_enabled": false,
       "private_settings": {}
     },
     {
-      "prev_ver": 537001986,
+      "prev_ver": 553648128,
       "name": "Escena",
       "uuid": "69b2593e-f37f-402f-80b5-73c1c1919677",
       "id": "scene",
@@ -108,7 +115,7 @@
               "y": 1080.0
             },
             "align": 5,
-            "bounds_type": 0,
+            "bounds_type": 2,
             "bounds_align": 0,
             "bounds_crop": false,
             "crop_left": 0,
@@ -118,12 +125,12 @@
             "id": 6,
             "group_item_backup": false,
             "pos": {
-              "x": 0.0,
-              "y": 0.0
+              "x": -121.0,
+              "y": 232.0
             },
             "pos_rel": {
-              "x": -1.7777777910232544,
-              "y": -1.0
+              "x": -2.001851797103882,
+              "y": -0.5703703761100769
             },
             "scale": {
               "x": 1.0,
@@ -134,12 +141,12 @@
               "y": 1.0
             },
             "bounds": {
-              "x": 0.0,
-              "y": 0.0
+              "x": 1920.0,
+              "y": 1080.0
             },
             "bounds_rel": {
-              "x": 0.0,
-              "y": 0.0
+              "x": 3.555555582046509,
+              "y": 2.0
             },
             "scale_filter": "disable",
             "blend_method": "default",
@@ -173,6 +180,7 @@
       "deinterlace_mode": 0,
       "deinterlace_field_order": 0,
       "monitoring_type": 0,
+      "monitoring_enabled": false,
       "canvas_uuid": "6c69626f-6273-4c00-9d88-c5136d61696e",
       "private_settings": {}
     }
@@ -214,8 +222,8 @@
   ],
   "saved_projectors": [],
   "preview_locked": false,
-  "scaling_enabled": false,
-  "scaling_level": -9,
+  "scaling_enabled": true,
+  "scaling_level": 0,
   "scaling_off_x": 0.0,
   "scaling_off_y": 0.0,
   "modules": {

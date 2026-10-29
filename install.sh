@@ -4,7 +4,7 @@
 #   ./install.sh                 todo: paquetes, recursos, copias, enlaces, GNOME y NEPTUNO
 #   ./install.sh --solo-enlaces  solo vuelve a crear los enlaces de stow
 #   ./install.sh --sin-paquetes --sin-recursos --sin-gnome --sin-neptuno
-set -euo pipefail
+set -Eeuo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 PAQUETES=1 RECURSOS=1 COPIAS_ON=1 GNOME=1 NEPTUNO=1
@@ -24,6 +24,7 @@ DOTFILES_REAL="$(readlink -f "$DOTFILES")"
 RESPALDO="$HOME/.dotfiles-respaldo/$(date +%Y%m%d-%H%M%S)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
+trap 'aviso "install.sh se detuvo en la línea $LINENO: $BASH_COMMAND"; aviso "Vuelve a ejecutarlo; los pasos ya hechos no se repiten mal."' ERR
 
 instalar_paquetes() {
 	if command -v apt-get >/dev/null; then
@@ -36,11 +37,14 @@ instalar_paquetes() {
 		fedora="$(rpm -E %fedora)"
 		sudo dnf install -y \
 			"https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$fedora.noarch.rpm" \
-			"https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$fedora.noarch.rpm"
+			"https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$fedora.noarch.rpm" ||
+			aviso "No se pudo instalar RPM Fusion; sus paquetes se omitirán"
 		sudo install -m 644 "$DOTFILES"/paquetes/repos/*.repo /etc/yum.repos.d/
 		info "Paquetes dnf ($(wc -l <"$DOTFILES/paquetes/dnf.txt"))"
+		# Un paquete que falle (p. ej. drivers atados a otro kernel) no debe impedir restaurar las configuraciones.
 		# shellcheck disable=SC2046
-		sudo dnf install -y --skip-unavailable --skip-broken $(cat "$DOTFILES/paquetes/dnf.txt")
+		sudo dnf install -y --skip-unavailable --skip-broken $(cat "$DOTFILES/paquetes/dnf.txt") ||
+			aviso "dnf no pudo instalar todo; el resto de la instalación continúa"
 	fi
 	if command -v flatpak >/dev/null; then
 		info "Flatpaks"
@@ -59,7 +63,8 @@ instalar_paquetes() {
 	if ! command -v starship >/dev/null && [[ ! -x $HOME/.local/bin/starship ]]; then
 		info "Starship"
 		mkdir -p "$HOME/.local/bin"
-		curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin" >/dev/null
+		curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin" >/dev/null ||
+			aviso "No se pudo instalar Starship"
 	fi
 	instalar_apps_github
 }
