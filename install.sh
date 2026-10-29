@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Restaura los dotfiles en un PC (pensado para Fedora con GNOME).
 #
-#   ./install.sh                 todo: paquetes, recursos, copias, enlaces, GNOME y NEPTUNO
+#   ./install.sh                 todo: paquetes, recursos, agentes, copias, enlaces, GNOME y NEPTUNO
 #   ./install.sh --solo-enlaces  solo vuelve a crear los enlaces de stow
-#   ./install.sh --sin-paquetes --sin-recursos --sin-gnome --sin-neptuno
+#   ./install.sh --sin-paquetes --sin-recursos --sin-agentes --sin-gnome --sin-neptuno
 set -Eeuo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-PAQUETES=1 RECURSOS=1 COPIAS_ON=1 GNOME=1 NEPTUNO=1
+PAQUETES=1 RECURSOS=1 AGENTES=1 COPIAS_ON=1 GNOME=1 NEPTUNO=1
 for arg in "$@"; do
 	case "$arg" in
-	--solo-enlaces) PAQUETES=0 RECURSOS=0 COPIAS_ON=0 GNOME=0 NEPTUNO=0 ;;
+	--solo-enlaces) PAQUETES=0 RECURSOS=0 AGENTES=0 COPIAS_ON=0 GNOME=0 NEPTUNO=0 ;;
 	--sin-paquetes) PAQUETES=0 ;;
 	--sin-recursos) RECURSOS=0 ;;
+	--sin-agentes) AGENTES=0 ;;
 	--sin-gnome) GNOME=0 ;;
 	--sin-neptuno) NEPTUNO=0 ;;
 	-h | --help) sed -n '2,7p' "$0"; exit 0 ;;
@@ -162,6 +163,62 @@ instalar_recursos() {
 	unzip -qo "$TMP/victor.zip" -d "$fuentes/VictorMono"
 }
 
+# Claude Code, opencode y gentle-ai (con Engram). Va antes de restaurar_copias para que mi
+# configuración de agentes/ quede encima de la que genera gentle-ai.
+instalar_agentes() {
+	local bin="$HOME/.local/bin"
+	mkdir -p "$bin"
+	export PATH="$bin:$HOME/.opencode/bin:$PATH"
+	# Los instaladores no deben escribir en ~/.bashrc: es un enlace al repo y ya trae estas rutas.
+	if ! command -v claude >/dev/null; then
+		info "Claude Code"
+		curl -fsSL https://claude.ai/install.sh | bash || aviso "No se pudo instalar Claude Code"
+	fi
+	if ! command -v opencode >/dev/null; then
+		info "opencode"
+		curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path || aviso "No se pudo instalar opencode"
+	fi
+	# El plugin de Engram para Claude Code necesita jq.
+	if ! command -v jq >/dev/null; then
+		if command -v dnf >/dev/null; then
+			sudo dnf install -y jq || aviso "No se pudo instalar jq"
+		elif command -v apt-get >/dev/null; then
+			sudo apt-get install -y jq || aviso "No se pudo instalar jq"
+		fi
+	fi
+	if ! command -v gentle-ai >/dev/null; then
+		info "gentle-ai"
+		curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash ||
+			aviso "No se pudo instalar gentle-ai"
+	fi
+	# gentle-ai exige que el plugin de opencode 2 ya esté en ~/.config/opencode/node_modules.
+	local oc="$HOME/.config/opencode"
+	if [[ -f $DOTFILES/agentes/opencode/package.json ]] && command -v npm >/dev/null; then
+		mkdir -p "$oc"
+		cp "$DOTFILES"/agentes/opencode/package{,-lock}.json "$oc/" 2>/dev/null || true
+		(cd "$oc" && npm install --silent --no-fund --no-audit) || aviso "npm install falló en $oc"
+	fi
+	local estado="$DOTFILES/agentes/gentle-ai/state.json" opciones
+	if command -v gentle-ai >/dev/null && [[ -f $estado ]]; then
+		info "gentle-ai: agentes, Engram y skills"
+		# Las mismas opciones que tengo en este equipo, leídas del respaldo.
+		opciones="$(python3 -I - "$estado" <<'EOF'
+import json, sys
+e = json.load(open(sys.argv[1]))
+print(' '.join([
+    '--agents', ','.join(e.get('installed_agents', [])),
+    '--components', ','.join(e.get('components', [])),
+    '--skills', ','.join(e.get('skills', [])),
+    '--preset', e.get('preset', 'custom'),
+    '--persona', e.get('persona', 'custom'),
+]))
+EOF
+		)"
+		# shellcheck disable=SC2086
+		gentle-ai install $opciones || aviso "gentle-ai install falló; ejecútalo a mano: gentle-ai install $opciones"
+	fi
+}
+
 restaurar_copias() {
 	info "Agentes y recursos de escritorio"
 	local linea carpeta origen
@@ -281,6 +338,7 @@ clonar_neptuno() {
 configurar_filtro
 ((PAQUETES)) && instalar_paquetes
 ((RECURSOS)) && instalar_recursos
+((AGENTES)) && instalar_agentes
 ((COPIAS_ON)) && restaurar_copias
 crear_enlaces
 ((GNOME)) && aplicar_gnome
@@ -290,8 +348,8 @@ info "Listo"
 if ((COPIAS_ON)); then
 	cat <<'EOF'
 Falta a mano (no se guardan en el repo por seguridad):
-  - Iniciar sesión en Claude Code y en opencode.
+  - Iniciar sesión en Claude Code (claude, luego /login) y en opencode (opencode auth login).
   - Recrear ~/.config/opencode/config.json (API key) y service.json.
-  - Instalar gentle-ai y engram; la memoria de Engram empieza vacía.
+  - La memoria de Engram empieza vacía.
 EOF
 fi

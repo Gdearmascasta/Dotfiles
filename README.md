@@ -37,7 +37,11 @@ Si solo clonas el repo para editarlo, ejecuta antes `./install.sh --solo-enlaces
 filtro que quita los datos personales y el hook que impide hacer commit sin él. Para hacer push
 necesitas permiso de escritura en el repo (SSH o `gh auth login`).
 
-Opciones: `--solo-enlaces`, `--sin-paquetes`, `--sin-recursos`, `--sin-gnome`, `--sin-neptuno`.
+Opciones: `--solo-enlaces`, `--sin-paquetes`, `--sin-recursos`, `--sin-agentes`, `--sin-gnome`, `--sin-neptuno`.
+
+El paso de agentes instala Claude Code, opencode y gentle-ai (con Engram, Context7 y las skills de
+`agentes/gentle-ai/state.json`), y después pone encima la configuración de `agentes/`. Falta iniciar
+sesión a mano: `claude` y luego `/login`, y `opencode auth login`.
 Lo que ocupaba el sitio de un enlace no se borra: queda en `~/.dotfiles-respaldo/<fecha>/`.
 
 ## Actualizar el respaldo
