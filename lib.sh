@@ -105,10 +105,17 @@ dconf_archivo() {
 # Activa el filtro de .gitattributes que quita datos personales al hacer commit.
 configurar_filtro() {
 	git -C "$DOTFILES" rev-parse --git-dir >/dev/null 2>&1 || return 0
-	git -C "$DOTFILES" config filter.privado.clean 'python3 -I filtros/privado.py %f'
-	git -C "$DOTFILES" config filter.privado.smudge cat
+	git -C "$DOTFILES" config filter.privado.clean 'python3 -I filtros/privado.py clean %f'
+	git -C "$DOTFILES" config filter.privado.smudge 'python3 -I filtros/privado.py smudge %f'
 	git -C "$DOTFILES" config filter.privado.required true
 	git -C "$DOTFILES" config core.hooksPath .githooks
+	# Lo que se clonó antes de activar el filtro aún tiene @HOME@: se vuelve a sacar del repo para
+	# poner la carpeta de este equipo. Solo si no tiene cambios locales.
+	local f
+	while IFS= read -r -d '' f; do
+		git -C "$DOTFILES" diff --quiet -- "$f" || continue
+		rm -f "$DOTFILES/$f" && git -C "$DOTFILES" checkout -- "$f"
+	done < <(git -C "$DOTFILES" grep -lzF '@HOME@' -- . ':!README.md' ':!filtros' ':!lib.sh' ':!install.sh' ':!backup.sh' || true)
 }
 
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }

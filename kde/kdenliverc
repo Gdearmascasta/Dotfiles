@@ -4,7 +4,7 @@ KdenliveProjectsFolder[$e]=$HOME/Vídeos,$HOME/Documentos
 
 [Recent Profiles]
 recentProfileNames=1920x1080 90.00fps,HD 1080p 60 fps,HD 1080p 25 fps
-recentProfiles=/home/gcasta/.local/share/kdenlive/profiles/customprofile0,atsc_1080p_60,atsc_1080p_25
+recentProfiles=@HOME@/.local/share/kdenlive/profiles/customprofile0,atsc_1080p_60,atsc_1080p_25
 
 [UiSettings]
 ColorScheme=BreezeDark

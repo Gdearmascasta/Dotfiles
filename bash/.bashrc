@@ -874,10 +874,10 @@ if [[ $- == *i* ]] && command -v zoxide >/dev/null 2>&1; then
 fi
 
 # opencode
-export PATH=/home/gcasta/.opencode/bin:$PATH
+export PATH=@HOME@/.opencode/bin:$PATH
 
 # pnpm
-export PNPM_HOME='/home/gcasta/.local/share/pnpm'
+export PNPM_HOME='@HOME@/.local/share/pnpm'
 case ":$PATH:" in
   ":$PNPM_HOME/bin:"*) ;;
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;
@@ -886,4 +886,4 @@ esac
 
 
 # Added by Antigravity CLI installer
-export PATH="/home/gcasta/.local/bin:$PATH"
+export PATH="@HOME@/.local/bin:$PATH"

@@ -1,6 +1,6 @@
 # NEPTUNO — Protocolo de ejecución de alto rendimiento
 
-Esta configuración global (copia del ecosistema maestro en /home/gcasta/Documentos/Neptuno/NEPTUNO) hace que cualquier modelo (Haiku, Sonnet, Opus) trabaje, en cualquier proyecto, con la disciplina de razonamiento y ejecución del nivel más alto. Estas reglas NO son opcionales: son el contrato de calidad de todas tus sesiones.
+Esta configuración global (copia del ecosistema maestro en @HOME@/Documentos/Neptuno/NEPTUNO) hace que cualquier modelo (Haiku, Sonnet, Opus) trabaje, en cualquier proyecto, con la disciplina de razonamiento y ejecución del nivel más alto. Estas reglas NO son opcionales: son el contrato de calidad de todas tus sesiones.
 
 ## 0. Al iniciar sesión
 
@@ -42,7 +42,7 @@ Nunca saltes directamente a escribir código. En cada tarea no trivial:
 
 - Llama herramientas independientes **en paralelo** (misma respuesta), nunca en serie.
 - No re-derives hechos ya establecidos en la conversación.
-- **Jerarquía de coste**: (0) el dato ya está en la conversación → (0,5) `mem_search` si hay memoria del proyecto → (1) Grep/Glob → (2) Read con offset/limit → (3) Read completo. Nunca pagues el nivel N si el N−1 responde. Tabla completa en `/home/gcasta/.claude/docs/ECONOMIA-TOKENS.md`.
+- **Jerarquía de coste**: (0) el dato ya está en la conversación → (0,5) `mem_search` si hay memoria del proyecto → (1) Grep/Glob → (2) Read con offset/limit → (3) Read completo. Nunca pagues el nivel N si el N−1 responde. Tabla completa en `@HOME@/.claude/docs/ECONOMIA-TOKENS.md`.
 - Trabaja en línea por defecto. Delega en `scout`/`Explore` solo una búsqueda que de verdad supere una tanda de lecturas acotada; nunca para leer archivos que vas a leer igualmente antes de editar.
 - Respuestas: primero el resultado, luego el detalle. Sin secciones/headers para preguntas simples.
 - Usa `/optimize-tokens` cuando la sesión se alargue.
@@ -67,12 +67,12 @@ Si alguna respuesta es dudosa, corrige antes de reportar. La revisión formal au
 ## 8. Herramientas del ecosistema
 
 ### Catálogo de comandos y subagentes
-El catálogo completo, agrupado por familia, está en `/home/gcasta/.claude/docs/COMANDOS.md`. Familias: proceso (`/deep-plan`, `/verify-work`, `/debug`, `/bug-hunt`, `/write-tests`, `/refactor`, `/handoff`…), calidad y lenguaje (`/code-standards`, `/document-code`, `/redactar`, `/write-natural`…), full stack, datos, diseño y frontend, Android, Expo, Capacitor, escritorio, GitHub, y los subagentes (`scout`, `architect`, `critic`, `debugger`, `verifier`…). Claude Code los lista con su descripción en cada sesión.
+El catálogo completo, agrupado por familia, está en `@HOME@/.claude/docs/COMANDOS.md`. Familias: proceso (`/deep-plan`, `/verify-work`, `/debug`, `/bug-hunt`, `/write-tests`, `/refactor`, `/handoff`…), calidad y lenguaje (`/code-standards`, `/document-code`, `/redactar`, `/write-natural`…), full stack, datos, diseño y frontend, Android, Expo, Capacitor, escritorio, GitHub, y los subagentes (`scout`, `architect`, `critic`, `debugger`, `verifier`…). Claude Code los lista con su descripción en cada sesión.
 
 ### Memoria en Obsidian (grafo de memoria)
 La memoria de Engram se vuelca a la bóveda de Obsidian `~/Documentos/Obsidian Vault/engram/` (cambiable con `$NEPTUNO_OBSIDIAN_VAULT`) al cerrar cada sesión de Claude Code o de opencode: una nota por observación, hubs por tema y colores por tipo en la vista de grafo de Obsidian. El volcado es incremental y de solo escritura hacia la bóveda: **Engram es la fuente de verdad**, editar las notas en Obsidian no cambia la memoria. Volcado manual: `engram obsidian-export --all --vault "$HOME/Documentos/Obsidian Vault"`.
 
-### Automatizaciones (hooks — coste cero de tokens, ver `/home/gcasta/.claude/docs/AUTOMATION.md`)
+### Automatizaciones (hooks — coste cero de tokens, ver `@HOME@/.claude/docs/AUTOMATION.md`)
 | Hook | Evento | Qué hace |
 |---|---|---|
 | `protect-secrets` | antes de Edit/Write | Bloquea escrituras sobre `.env*`, keystores, claves y credenciales |
@@ -81,7 +81,7 @@ La memoria de Engram se vuelca a la bóveda de Obsidian `~/Documentos/Obsidian V
 | `hivemind-toggle` | inicio de sesión | Si la flota externa está apagada, avisa de que se trabaja en **modo solo Claude** y no se delega. Callado si está encendida |
 | `engram-obsidian` | fin de sesión | Vuelca la memoria de Engram a la bóveda de Obsidian (incremental, con candado por si Claude Code y opencode cierran a la vez). Silencioso si falta `engram` o la bóveda |
 
-Para vigilancia recurrente usa `/loop` (babysitting de CI/PRs), para tareas periódicas sin sesión `/schedule`, y para usar Claude como paso de un script `claude -p` (matriz de decisión en `/home/gcasta/.claude/docs/AUTOMATION.md`).
+Para vigilancia recurrente usa `/loop` (babysitting de CI/PRs), para tareas periódicas sin sesión `/schedule`, y para usar Claude como paso de un script `claude -p` (matriz de decisión en `@HOME@/.claude/docs/AUTOMATION.md`).
 
 ### Interfaz visual
 `pixel-agents --port 3100` levanta una oficina pixel-art donde cada sesión de Claude Code y cada
@@ -95,7 +95,7 @@ usuario de systemd, con linger y `preparar` como `ExecStartPre`). Al acabar un e
 `bash tools/pixel-app.sh abrir` la abre como aplicación (ventana propia, sin barra de URL) y
 resuelve el token vivo; `instalar-lanzador` la deja en el menú de aplicaciones. El token rota en cada arranque y no
 se puede fijar: la URL de ahora la da `node tools/pixel-bridge.js url`. Trátala como un secreto.
-Detalle en `/home/gcasta/.claude/docs/PIXEL-AGENTS.md`.
+Detalle en `@HOME@/.claude/docs/PIXEL-AGENTS.md`.
 
 ### MCPs
 | MCP | Cuándo usarlo |
@@ -105,7 +105,7 @@ Detalle en `/home/gcasta/.claude/docs/PIXEL-AGENTS.md`.
 | `context7` | Documentación viva de frameworks y librerías: consúltala antes de llamar una API que no hayas verificado en el código (la instala gentle-ai) |
 | `chrome-devtools` | Verificación real de frontend: navega, hace click/rellena, captura pantalla, lee consola/red y traza performance en un Chrome de verdad — úsalo en `/verify-work`, `/full-stack-feature` (capa frontend) y `a11y-review` en vez de declarar la UI "no verificada" |
 
-Guías detalladas: `/home/gcasta/.claude/docs/PROMPTING.md`, `/home/gcasta/.claude/docs/ECONOMIA-TOKENS.md`, `/home/gcasta/.claude/docs/WORKFLOWS.md`, `/home/gcasta/.claude/docs/DEBUGGING.md`, `/home/gcasta/.claude/docs/FULLSTACK.md`, `/home/gcasta/.claude/docs/DATA.md`, `/home/gcasta/.claude/docs/ANDROID.md`, `/home/gcasta/.claude/docs/REACT-NATIVE.md`, `/home/gcasta/.claude/docs/CAPACITOR.md`, `/home/gcasta/.claude/docs/DESKTOP.md`, `/home/gcasta/.claude/docs/GITHUB.md`, `/home/gcasta/.claude/docs/AUTOMATION.md`, `/home/gcasta/.claude/docs/DESIGN.md`, `/home/gcasta/.claude/docs/OPENCODE.md`, `/home/gcasta/.claude/docs/HIVEMIND.md`, `/home/gcasta/.claude/docs/PIXEL-AGENTS.md`, `/home/gcasta/.claude/docs/COMANDOS.md`.
+Guías detalladas: `@HOME@/.claude/docs/PROMPTING.md`, `@HOME@/.claude/docs/ECONOMIA-TOKENS.md`, `@HOME@/.claude/docs/WORKFLOWS.md`, `@HOME@/.claude/docs/DEBUGGING.md`, `@HOME@/.claude/docs/FULLSTACK.md`, `@HOME@/.claude/docs/DATA.md`, `@HOME@/.claude/docs/ANDROID.md`, `@HOME@/.claude/docs/REACT-NATIVE.md`, `@HOME@/.claude/docs/CAPACITOR.md`, `@HOME@/.claude/docs/DESKTOP.md`, `@HOME@/.claude/docs/GITHUB.md`, `@HOME@/.claude/docs/AUTOMATION.md`, `@HOME@/.claude/docs/DESIGN.md`, `@HOME@/.claude/docs/OPENCODE.md`, `@HOME@/.claude/docs/HIVEMIND.md`, `@HOME@/.claude/docs/PIXEL-AGENTS.md`, `@HOME@/.claude/docs/COMANDOS.md`.
 
 ## 9. Hivemind — la flota externa
 
@@ -140,11 +140,11 @@ Interoperabilidad: una sola fuente de verdad (`.claude/`) y capas generadas — 
 opencode, `.agents/` + `AGENTS.md` + `.windsurf/rules/` (que Devin y Antigravity leen los dos) con
 `node tools/sync-agents.js`. Devin además lee `.claude/skills/` de forma nativa. Doctrina completa,
 fichas por agente, las 4 capas del ecosistema agéntico (MCP, A2A/ACP, Computer Use, sandboxes) y el
-registro de deuda de verificación: `/home/gcasta/.claude/docs/HIVEMIND.md`.
+registro de deuda de verificación: `@HOME@/.claude/docs/HIVEMIND.md`.
 
 ## 10. Compatibilidad opencode
 
-Todo lo de la sección 8 (skills, agentes, MCPs) también existe en formato `opencode` — `.opencode/command/`, `.opencode/agent/` y la clave `mcp` de `opencode.json`, generados por `node tools/sync-opencode.js` a partir de `.claude/` (fuente de verdad única) y sincronizados también a `~/.config/opencode/`. `CLAUDE.md` no se duplica: opencode lo lee por la clave `instructions` de su `opencode.json` global (gentle-ai ocupa `AGENTS.md`). Los hooks `protect-secrets`, `handoff-reminder`, `andromeda-context` y `engram-obsidian` tienen su puerto a mano en `tools/plugins/` (opencode no comparte el modelo de hooks de Claude Code). Detalle completo, tabla de modelos y notas de confianza en `/home/gcasta/.claude/docs/OPENCODE.md`.
+Todo lo de la sección 8 (skills, agentes, MCPs) también existe en formato `opencode` — `.opencode/command/`, `.opencode/agent/` y la clave `mcp` de `opencode.json`, generados por `node tools/sync-opencode.js` a partir de `.claude/` (fuente de verdad única) y sincronizados también a `~/.config/opencode/`. `CLAUDE.md` no se duplica: opencode lo lee por la clave `instructions` de su `opencode.json` global (gentle-ai ocupa `AGENTS.md`). Los hooks `protect-secrets`, `handoff-reminder`, `andromeda-context` y `engram-obsidian` tienen su puerto a mano en `tools/plugins/` (opencode no comparte el modelo de hooks de Claude Code). Detalle completo, tabla de modelos y notas de confianza en `@HOME@/.claude/docs/OPENCODE.md`.
 
 Tras editar cualquier cosa en `.claude/`, resincroniza las tres capas generadas (idempotentes). `--provider=tri` es la tabla de modelos en uso (Big Pickle de Zen orquesta e implementa, Nemotron de NVIDIA revisa, Antigravity solo en architect/debugger con Gemini y en critic/jd-judge-a con Opus, para proteger la cuenta Pro de Google; tras sincronizar, reinicia el servicio con `pkill -f "opencode serv[e] --service"` o Antigravity falla con "plugin has been disposed"): sin flag, sync-opencode apunta los agentes a Anthropic y fallan en esta cuenta.
 

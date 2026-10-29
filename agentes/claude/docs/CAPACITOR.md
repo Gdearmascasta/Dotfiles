@@ -1,6 +1,6 @@
 # CAPACITOR.md — Doctrina Capacitor/Ionic por terminal
 
-Capacitor envuelve una app web en un proyecto nativo. El ciclo Android (sync, compilar, firmar, instalar, observar) se hace por terminal reutilizando `/home/gcasta/.claude/docs/ANDROID.md` una vez sincronizado; iOS no es ejecutable en Windows y su camino es siempre CI en la nube. Las skills `/capacitor-build`, `/capacitor-release`, `/capacitor-run` y `/capacitor-doctor` implementan esta doctrina; el agente `capacitor` la ejecuta en contexto aparte, coordinando con el agente `android` para el compile final.
+Capacitor envuelve una app web en un proyecto nativo. El ciclo Android (sync, compilar, firmar, instalar, observar) se hace por terminal reutilizando `@HOME@/.claude/docs/ANDROID.md` una vez sincronizado; iOS no es ejecutable en Windows y su camino es siempre CI en la nube. Las skills `/capacitor-build`, `/capacitor-release`, `/capacitor-run` y `/capacitor-doctor` implementan esta doctrina; el agente `capacitor` la ejecuta en contexto aparte, coordinando con el agente `android` para el compile final.
 
 ## 1. El mapa mental mínimo
 
@@ -33,7 +33,7 @@ proyecto/
 | Android Studio | Otter · 2025.2.1 o más nuevo |
 | JDK | 17+ soportado, 21 recomendado |
 
-Para otros majors (6.x, 7.x) no confíes en memoria: la tabla se mueve con cada release. Fuente viva: `capacitorjs.com/docs/updating/<major>-0`. La tríada JDK↔Gradle↔AGP del proyecto nativo generado sigue las reglas de `/home/gcasta/.claude/docs/ANDROID.md` §2 una vez que `android/` existe.
+Para otros majors (6.x, 7.x) no confíes en memoria: la tabla se mueve con cada release. Fuente viva: `capacitorjs.com/docs/updating/<major>-0`. La tríada JDK↔Gradle↔AGP del proyecto nativo generado sigue las reglas de `@HOME@/.claude/docs/ANDROID.md` §2 una vez que `android/` existe.
 
 ## 3. Diagnóstico: síntoma → causa → fix
 
@@ -42,7 +42,7 @@ Para otros majors (6.x, 7.x) no confíes en memoria: la tabla se mueve con cada 
 | WebView en blanco tras instalar | `sync` no corrido tras el último build web, o `webDir` apunta a carpeta vieja | build web real + `npx cap sync android`, confirmar `webDir` |
 | Plugin instalado no funciona en runtime | falta `cap sync` tras `npm install @capacitor/plugin-x` | `npx cap sync` |
 | `cap doctor` muestra Installed ≠ Latest en cli/core/android | versiones `@capacitor/*` desalineadas | `npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest` + sync |
-| Build Gradle falla justo tras actualizar el major de Capacitor | AGP/Gradle/JDK no cuadran con el nuevo mínimo del major | ver tabla §2 + `/home/gcasta/.claude/docs/ANDROID.md` §2 (tríada) |
+| Build Gradle falla justo tras actualizar el major de Capacitor | AGP/Gradle/JDK no cuadran con el nuevo mínimo del major | ver tabla §2 + `@HOME@/.claude/docs/ANDROID.md` §2 (tríada) |
 | `npx cap add android` falla "already exists" | `android/` ya generado, no se puede re-add | editar a mano, o borrar la carpeta para regenerar (se pierden cambios manuales no versionados) |
 | Funciona en emulador pero WebView en blanco en dispositivo real | build de producción con rutas absolutas / CORS distinto en el bundler | build relativo en el bundler; `npx cap run android -l --external` para descartar red |
 | `cap build android` pide contraseña de keystore en cada llamada | flags de línea de comando en vez de config persistente | preferir `/apk-release` (lee credenciales de `gradle.properties`/env), no pasar `--keystorepass` en texto plano |

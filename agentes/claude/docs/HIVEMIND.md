@@ -535,7 +535,7 @@ contra la que sirve la regla de verificar contra el sistema real y no contra un 
 
 Funciona en los dos transportes, y `doctor` dice si hay servidor escuchando. Detalle, mapeo de
 eventos, las tres condiciones no obvias del protocolo y cómo comprobarlo por WebSocket, en
-`/home/gcasta/.claude/docs/PIXEL-AGENTS.md`.
+`@HOME@/.claude/docs/PIXEL-AGENTS.md`.
 
 ## 5. Interoperabilidad: una doctrina, cuatro lectores
 
@@ -586,7 +586,7 @@ Lo que **está verificado ejecutándolo** en esta máquina:
   El servidor lo confirma en claro: `Hook: Agent N - detected hooks-only external session`.
 - **Pixel Agents no manda nada fuera de la máquina.** Con el servidor arriba y tras despachar:
   escucha solo en `127.0.0.1:3100`, cero conexiones remotas, cero transcripts abiertos en ese
-  instante. Método y comando para repetirlo en `/home/gcasta/.claude/docs/PIXEL-AGENTS.md`.
+  instante. Método y comando para repetirlo en `@HOME@/.claude/docs/PIXEL-AGENTS.md`.
 - **El entorno de un terminal dentro de un snap rompe la autenticación de la flota.** VS Code exporta
   `XDG_DATA_HOME=~/snap/code/<rev>/.local/share`, así que las CLIs buscan sus credenciales dentro del
   sandbox y reportan «not logged in» aunque el `auth.json` exista en `~/.local/share`. `hivemind.js`

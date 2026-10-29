@@ -1,6 +1,6 @@
 # REACT-NATIVE.md — Doctrina Expo/React Native por terminal
 
-Todo el ciclo Expo (compilar, versionar, ejecutar, observar, publicar) se hace por terminal: Expo CLI + EAS CLI + adb para la parte Android. Xcode/Android Studio no son un requisito — y en esta máquina (Windows, sin macOS) Xcode directamente **no existe**: todo build de iOS pasa por EAS Build en la nube. Las skills `/expo-build`, `/expo-release`, `/expo-run` y `/expo-doctor` implementan esta doctrina; el agente `react-native` la ejecuta en contexto aparte. La capa Android subyacente (JDK, SDK, Gradle, adb) la cubre `/home/gcasta/.claude/docs/ANDROID.md` — este documento no la duplica.
+Todo el ciclo Expo (compilar, versionar, ejecutar, observar, publicar) se hace por terminal: Expo CLI + EAS CLI + adb para la parte Android. Xcode/Android Studio no son un requisito — y en esta máquina (Windows, sin macOS) Xcode directamente **no existe**: todo build de iOS pasa por EAS Build en la nube. Las skills `/expo-build`, `/expo-release`, `/expo-run` y `/expo-doctor` implementan esta doctrina; el agente `react-native` la ejecuta en contexto aparte. La capa Android subyacente (JDK, SDK, Gradle, adb) la cubre `@HOME@/.claude/docs/ANDROID.md` — este documento no la duplica.
 
 ## 1. El mapa mental mínimo
 
@@ -58,7 +58,7 @@ Verificado en `docs.expo.dev` a julio de 2026 — esta tabla cambia con cada rel
 ## 5. Verificación: Metro + adb, observar es verificar
 
 - Metro sirviendo sin errores de resolución es la primera señal; la segunda es la app arrancando en el target sin red screen (error JS) ni `FATAL EXCEPTION` (crash nativo).
-- Para Android, la observación es idéntica a un proyecto nativo (`/home/gcasta/.claude/docs/ANDROID.md` §5): `adb logcat -c`, lanzar, filtrar por `--pid`, `-b crash` para stacktraces, screenshot con `adb exec-out screencap -p`.
+- Para Android, la observación es idéntica a un proyecto nativo (`@HOME@/.claude/docs/ANDROID.md` §5): `adb logcat -c`, lanzar, filtrar por `--pid`, `-b crash` para stacktraces, screenshot con `adb exec-out screencap -p`.
 - Para iOS, sin Mac local la única verificación posible es una build EAS instalada en un dispositivo físico (vía el link/QR que da `eas build`) conectada a Metro con `npx expo start --dev-client` — no hay simulador disponible en esta máquina.
 
 ## 6. División del trabajo

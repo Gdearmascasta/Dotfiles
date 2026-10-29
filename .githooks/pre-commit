@@ -11,3 +11,7 @@ if git grep --cached -nIE '"recent": \[[^]]|"search_history": \[[^]]|"RestoreTok
 	echo "pre-commit: lo anterior son datos personales que no deberían entrar; revisa filtros/privado.py" >&2
 	exit 1
 fi
+if git grep --cached -lIF "$HOME/" -- . ':!README.md' >&2; then
+	echo "pre-commit: esos archivos llevan la ruta $HOME; añádelos al filtro en .gitattributes" >&2
+	exit 1
+fi

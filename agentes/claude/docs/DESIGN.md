@@ -27,4 +27,4 @@ frontend-design (dirección)
 
 ## Cuándo NO aplican estas skills
 
-Si el proyecto ya tiene un design system o CSS establecido y la tarea es extender un patrón existente, sigue el patrón del repo (regla general de `/home/gcasta/.claude/docs/FULLSTACK.md`: "Patrones del repo primero") en vez de reabrir la dirección estética desde cero. Estas skills son para UI nueva, sin dirección previa, o cuando el resultado actual se siente genérico y el usuario pide una vuelta de diseño.
+Si el proyecto ya tiene un design system o CSS establecido y la tarea es extender un patrón existente, sigue el patrón del repo (regla general de `@HOME@/.claude/docs/FULLSTACK.md`: "Patrones del repo primero") en vez de reabrir la dirección estética desde cero. Estas skills son para UI nueva, sin dirección previa, o cuando el resultado actual se siente genérico y el usuario pide una vuelta de diseño.

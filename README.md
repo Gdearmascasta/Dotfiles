@@ -82,4 +82,6 @@ Para añadir una app nueva: agrega una línea a `ENLACES` en `lib.sh` y ejecuta 
 - Historial de chats, telemetría, cachés y la memoria de Engram.
 - El perfil de Obsidian (está en cada bóveda, en `.obsidian/`).
 
-Algunas configuraciones guardan rutas con `/home/gcasta`: con otro nombre de usuario hay que ajustarlas.
+Las rutas a la carpeta personal se guardan en el repo como `@HOME@` y cada equipo las recupera con la
+suya al clonar o hacer `git pull`, así que da igual el nombre de usuario. Si clonaste antes de que
+existiera esto, `./install.sh --solo-enlaces` convierte los archivos que aún tengan `@HOME@`.

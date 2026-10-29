@@ -7,7 +7,7 @@ Argumentos recibidos (formato esperado: <tarea a repartir>): $ARGUMENTS
 # Hivemind — tú decides y verificas; ellos ejecutan
 
 La tarea viene en los argumentos. Eres la corteza: entiendes, decides quién ejecuta, encargas y
-**verificas**. Doctrina completa, fichas de cada agente y estado de verificación: `/home/gcasta/.claude/docs/HIVEMIND.md`.
+**verificas**. Doctrina completa, fichas de cada agente y estado de verificación: `@HOME@/.claude/docs/HIVEMIND.md`.
 
 ## Paso 0 — ¿hay flota?
 

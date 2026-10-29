@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/home/gcasta/.claude/hooks/protect-secrets.js\""
+            "command": "node \"@HOME@/.claude/hooks/protect-secrets.js\""
           }
         ]
       }
@@ -27,15 +27,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/home/gcasta/.claude/hooks/handoff-reminder.js\""
+            "command": "node \"@HOME@/.claude/hooks/handoff-reminder.js\""
           },
           {
             "type": "command",
-            "command": "node \"/home/gcasta/.claude/hooks/andromeda-context.js\""
+            "command": "node \"@HOME@/.claude/hooks/andromeda-context.js\""
           },
           {
             "type": "command",
-            "command": "node \"/home/gcasta/.claude/hooks/hivemind-toggle.js\""
+            "command": "node \"@HOME@/.claude/hooks/hivemind-toggle.js\""
           }
         ]
       },
@@ -76,7 +76,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/gcasta/.local/bin/isled --agent-hook claude"
+            "command": "@HOME@/.local/bin/isled --agent-hook claude"
           }
         ]
       }
@@ -110,7 +110,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"/home/gcasta/.claude/hooks/engram-obsidian.js\""
+            "command": "node \"@HOME@/.claude/hooks/engram-obsidian.js\""
           }
         ]
       }
@@ -120,7 +120,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/gcasta/.local/bin/isled --agent-hook claude",
+            "command": "@HOME@/.local/bin/isled --agent-hook claude",
             "timeout": 600
           }
         ]
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/gcasta/.local/bin/isled --agent-hook claude"
+            "command": "@HOME@/.local/bin/isled --agent-hook claude"
           }
         ]
       }

@@ -53,8 +53,8 @@ respaldar_dconf() {
 	mkdir -p "$DOTFILES/escritorio/dconf"
 	local ruta
 	for ruta in "${DCONF_RUTAS[@]}"; do
-		# Las rutas a la carpeta personal se guardan como @HOME@ para que sirvan con otro usuario.
-		dconf dump "$ruta" | sed "s|$HOME|@HOME@|g" >"$(dconf_archivo "$ruta")"
+		# El filtro de git guarda la carpeta personal como @HOME@ al hacer commit.
+		dconf dump "$ruta" >"$(dconf_archivo "$ruta")"
 	done
 }
 

@@ -55,5 +55,5 @@ Rebase de la rama del PR sobre la base actualizada; resolver leyendo **ambos lad
 ## 7. Automatización con GitHub
 
 - Esperas largas (CI de 10 min): no bloquear la sesión — `gh pr checks --watch` en background, o volver luego con `/pr-merge`.
-- Trabajo recurrente sobre PRs (¿está verde ya?, babysitting de un stack): ver `/home/gcasta/.claude/docs/AUTOMATION.md` (loops y schedules).
+- Trabajo recurrente sobre PRs (¿está verde ya?, babysitting de un stack): ver `@HOME@/.claude/docs/AUTOMATION.md` (loops y schedules).
 - CI que construye artefactos al taguear: empujar el tag y verificar el workflow, no duplicar el build a mano.

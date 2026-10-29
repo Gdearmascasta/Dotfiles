@@ -1,5 +1,13 @@
-# Se limpian al hacer commit con filtros/privado.py (ver configurar_filtro en lib.sh).
-*/ui.json                    filter=privado
-spotifast/settings.json      filter=privado
-obs-studio/basic/scenes/*.json filter=privado
-escritorio/dconf/*.ini       filter=privado
+# Pasan por filtros/privado.py (ver configurar_filtro en lib.sh): la carpeta personal se guarda
+# como @HOME@ y se quitan los datos personales de algunas apps.
+*                        filter=privado
+# Temas, fuentes y paquetes no guardan rutas personales; sin filtro el clon es más rápido.
+escritorio/**            -filter
+paquetes/**              -filter
+filtros/**               -filter
+.githooks/**             -filter
+*.sh                     -filter
+README.md                -filter
+.gitattributes           -filter
+.gitignore               -filter
+escritorio/dconf/*.ini   filter=privado

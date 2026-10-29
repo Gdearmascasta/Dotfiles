@@ -22,7 +22,7 @@ Variante con subagentes (feature divisible): `/deep-plan` → `/parallel-split` 
 /bug-hunt <área>    ← caza proactiva SIN síntoma previo (pre-release, código heredado); cada CONFIRMADO entra a /debug con la repro ya hecha
 ```
 
-Para bugs difíciles o cuando el fix directo no funcionó: lanzar el agente `debugger` (Opus, contexto propio) con el síntoma y la repro; usar el MCP `sequential-thinking` para razonar hipótesis sistemáticamente. Para localización amplia previa, agente `scout`. La taxonomía de sospechosos por síntoma y el arsenal de técnicas (bisección, debugging diferencial, heisenbugs) están en `/home/gcasta/.claude/docs/DEBUGGING.md`.
+Para bugs difíciles o cuando el fix directo no funcionó: lanzar el agente `debugger` (Opus, contexto propio) con el síntoma y la repro; usar el MCP `sequential-thinking` para razonar hipótesis sistemáticamente. Para localización amplia previa, agente `scout`. La taxonomía de sospechosos por síntoma y el arsenal de técnicas (bisección, debugging diferencial, heisenbugs) están en `@HOME@/.claude/docs/DEBUGGING.md`.
 
 ## Flujo 3 — Refactor
 
@@ -65,7 +65,7 @@ Final:     /handoff
 /verify-work                       ← integración UI→API→DB→UI
 ```
 
-Doctrina por capa: `/home/gcasta/.claude/docs/FULLSTACK.md`.
+Doctrina por capa: `@HOME@/.claude/docs/FULLSTACK.md`.
 
 ## Flujo 8 — Trabajo con datos
 
@@ -77,7 +77,7 @@ Query lenta:          /sql-optimize (EXPLAIN antes, medir después)
 Pregunta de negocio:  agente data-scientist con la pregunta exacta
 ```
 
-Doctrina completa: `/home/gcasta/.claude/docs/DATA.md`.
+Doctrina completa: `@HOME@/.claude/docs/DATA.md`.
 
 ## Matriz de decisión rápida
 

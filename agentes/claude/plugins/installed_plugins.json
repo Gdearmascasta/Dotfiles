@@ -4,7 +4,7 @@
     "engram@engram": [
       {
         "scope": "user",
-        "installPath": "/home/gcasta/.claude/plugins/cache/engram/engram/0.1.13",
+        "installPath": "@HOME@/.claude/plugins/cache/engram/engram/0.1.13",
         "version": "0.1.13",
         "installedAt": "2026-10-20T01:50:40.412Z",
         "lastUpdated": "2026-10-20T01:50:40.412Z",
